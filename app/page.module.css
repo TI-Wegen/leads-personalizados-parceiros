@@ -4,6 +4,7 @@
   background-color: aqua;
   background: url(../public/Bg.png) no-repeat;
   background-size: cover;
+  background-position: center;
 }
 
 .content {
@@ -58,13 +59,23 @@
   width: 100%;
   text-align: center;
   color: white;
-  margin-bottom: 20px;
 }
 
 .title_area_title {
   font-weight: 700;
   font-size: 24px;
   margin: 0;
+}
+
+.input_area {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input_area label {
+  color: white;
 }
 
 .text-green {

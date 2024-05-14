@@ -9,14 +9,12 @@ import {
   ThemeProvider,
   createTheme,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#f1f1f1",
-      },
-      secondary: {
         main: "#94c11f",
       },
     },
@@ -29,42 +27,55 @@ export default function Home() {
           },
         },
       },
-      MuiFormLabel: {
-        styleOverrides: {
-          root: {
-            color: "rgba(255,255,255,0.8)",
-          },
-        },
-      },
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            color: "#ffffff",
-            "& label.Mui-focused": {
-              color: "#ffffff",
-            },
-            "&.MuiInput-underline:after": {
-              borderBottomColor: "#ffffff",
-            },
-            "&.MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#ffffff",
-              },
-              "&:hover fieldset": {
-                borderColor: "#ffffff",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#ffffff",
-              },
-            },
-          },
-          input: {
-            color: "#f1f1f1",
+            color: "#333333",
+            backgroundColor: "#ffffff",
           },
         },
       },
     },
   });
+
+  const [nome, setNome] = useState<string>("");
+  const [telefone, setTelefone] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [valorConta, setValorConta] = useState<string>("");
+
+  async function clearFields() {
+    setNome("");
+    setTelefone("");
+    setEmail("");
+    setValorConta("");
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const body = {
+      nome: nome,
+      telefone: telefone,
+      email: email,
+      valorConta: valorConta,
+    };
+
+    const response = await fetch("/api/create-lead", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      alert(data.message);
+      await clearFields();
+    } else {
+      alert("Houve um erro ao criar seu contato.");
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -80,7 +91,7 @@ export default function Home() {
           </h2>
         </div>
         <div className={styles.content_right}>
-          <form id="form" className={styles.form_contato} method="post">
+          <form className={styles.form_contato} onSubmit={handleSubmit}>
             <div className={styles.title_area}>
               <h4 className={styles.title_area_title}>
                 <span className={styles.text_green}>CADASTRE-SE </span>
@@ -93,39 +104,72 @@ export default function Home() {
             </div>
             <ThemeProvider theme={theme}>
               <Stack direction="column" spacing={2}>
-                <TextField
-                  id="outlined-basic"
-                  label="Nome Completo"
-                  variant="outlined"
-                  fullWidth
-                  color="primary"
-                />
+                <div className={styles.input_area}>
+                  <label>Nome</label>
+                  <TextField
+                    id="nome"
+                    name="nome"
+                    placeholder="Nome"
+                    variant="outlined"
+                    fullWidth
+                    color="primary"
+                    required
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                  />
+                </div>
                 <Stack spacing={2} direction="row">
-                  <TextField
-                    id="outlined-basic"
-                    label="Email"
-                    variant="outlined"
-                    fullWidth
-                    color="primary"
-                    type="email"
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    label="Telefone"
-                    variant="outlined"
-                    fullWidth
-                    color="primary"
-                  />
+                  <div className={styles.input_area}>
+                    <label>Email</label>
+                    <TextField
+                      id="email"
+                      name="email"
+                      placeholder="Email"
+                      variant="outlined"
+                      fullWidth
+                      color="primary"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.input_area}>
+                    <label>Telefone</label>
+                    <TextField
+                      id="telefone"
+                      name="telefone"
+                      placeholder="Telefone"
+                      variant="outlined"
+                      fullWidth
+                      color="primary"
+                      required
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value)}
+                    />
+                  </div>
                 </Stack>
-                <TextField
-                  id="outlined-basic"
-                  label="Valor médio da conta"
-                  variant="outlined"
+                <div className={styles.input_area}>
+                  <label>Valor médio da conta</label>
+                  <TextField
+                    id="valor"
+                    name="valor"
+                    placeholder="Valor médio da conta"
+                    variant="outlined"
+                    fullWidth
+                    color="primary"
+                    required
+                    value={valorConta}
+                    onChange={(e) => setValorConta(e.target.value)}
+                  />
+                </div>
+
+                <Button
+                  variant="contained"
                   fullWidth
                   color="primary"
-                  type="number"
-                />
-                <Button variant="contained" fullWidth color="secondary">
+                  type="submit"
+                >
                   Solicitar Proposta
                 </Button>
               </Stack>
