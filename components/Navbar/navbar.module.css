@@ -1,0 +1,47 @@
+.container {
+  width: 100%;
+  height: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background: #16663c;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+}
+
+.wpp {
+  display: flex;
+  align-items: center;
+  font-size: 24px !important;
+  cursor: pointer;
+}
+
+.wpp:hover {
+  text-decoration: none;
+  color: lightgray;
+}
+
+.wpp_number {
+  color: white;
+  margin: 0 !important;
+}
+
+.wpp img {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+}
+
+.wpp_ddd {
+  font-size: 20px;
+}
+
+@media (max-width: 1024px) {
+  .wpp {
+    display: none;
+  }
+}
