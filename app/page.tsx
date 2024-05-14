@@ -9,7 +9,8 @@ import {
   ThemeProvider,
   createTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Notiflix from "notiflix";
 
 export default function Home() {
   const theme = createTheme({
@@ -70,10 +71,10 @@ export default function Home() {
 
     if (response.ok) {
       const data = await response.json();
-      alert(data.message);
+      Notiflix.Notify.success(data.message);
       await clearFields();
     } else {
-      alert("Houve um erro ao criar seu contato.");
+      Notiflix.Notify.failure("Houve um erro ao criar seu contato.");
     }
   }
 
