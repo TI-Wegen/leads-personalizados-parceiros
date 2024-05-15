@@ -13,8 +13,10 @@
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.17",
     "@types/mysql": "^2.15.26",
+    "@types/nodemailer": "^6.4.15",
     "mysql": "^2.18.1",
     "next": "14.2.3",
+    "nodemailer": "^6.9.13",
     "notiflix": "^3.2.7",
     "react": "^18",
     "react-dom": "^18"
