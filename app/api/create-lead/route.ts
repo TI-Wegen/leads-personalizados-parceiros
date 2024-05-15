@@ -19,10 +19,12 @@ interface BodyRequest {
 }
 
 export async function POST(req: Request) {
-  var idParceiro = process.env.ID_PARCEIRO;
+  const data = await req.json();
+
+  var idParceiro = data.idParceiro;
 
   try {
-    var parceiroResponse = await GetParceiroResponse();
+    var parceiroResponse = await GetParceiroResponse(idParceiro);
   } catch (error) {
     return NextResponse.json({
       message: error,
@@ -49,7 +51,7 @@ export async function POST(req: Request) {
   var idBackoffice = "12";
 
   try {
-    var isBackoffice = await VerifyIsBackoffice();
+    var isBackoffice = await VerifyIsBackoffice(idParceiro);
   } catch (error) {
     return NextResponse.json({
       message: error,
@@ -69,8 +71,6 @@ export async function POST(req: Request) {
       });
     }
   }
-
-  const data = await req.json();
 
   var datas = GetDatas();
 

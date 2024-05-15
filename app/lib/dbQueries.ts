@@ -1,5 +1,46 @@
 import connection from "@/app/lib/dbConnection";
 
+export interface ConfigResponse {
+  Id: string;
+  IdParceiro: string;
+  Nome: string;
+  Telefone: string;
+  CorPrimaria: string;
+  CorSecundaria: string;
+  Logo: string;
+  BgImage: string | null;
+  BgImageMobile: string | null;
+  Texto: string;
+  TemPixelFacebook: boolean;
+  PixelFacebook: string | null;
+}
+
+export async function GetConfigResponse(
+  idParceiro: string
+): Promise<ConfigResponse> {
+  try {
+    const result: ConfigResponse = await new Promise((resolve, reject) => {
+      connection.query(
+        `
+            SELECT *
+            FROM tblleadConfig 
+            WHERE idParceiro='${idParceiro}'
+        `,
+        [],
+        (error, result: ConfigResponse[]) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result[0]);
+        }
+      );
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
 interface ParceiroResponse {
   idParceiro: string;
   idParceiroMaster: string;
@@ -7,8 +48,9 @@ interface ParceiroResponse {
   descParceiro: string;
 }
 
-export async function GetParceiroResponse(): Promise<ParceiroResponse> {
-  var idParceiro = process.env.ID_PARCEIRO;
+export async function GetParceiroResponse(
+  idParceiro: string
+): Promise<ParceiroResponse> {
   try {
     const result: ParceiroResponse = await new Promise((resolve, reject) => {
       connection.query(
@@ -62,8 +104,7 @@ export async function GetInfoCampanhaById(
   }
 }
 
-export async function VerifyIsBackoffice(): Promise<boolean> {
-  var idParceiro = process.env.ID_PARCEIRO;
+export async function VerifyIsBackoffice(idParceiro: string): Promise<boolean> {
   try {
     const result: boolean = await new Promise((resolve, reject) => {
       connection.query(
