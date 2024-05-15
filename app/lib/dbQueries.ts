@@ -7,9 +7,6 @@ export interface ConfigResponse {
   Telefone: string;
   CorPrimaria: string;
   CorSecundaria: string;
-  Logo: string;
-  BgImage: string | null;
-  BgImageMobile: string | null;
   Texto: string;
   TemPixelFacebook: boolean;
   PixelFacebook: string | null;

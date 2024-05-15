@@ -65,9 +65,6 @@ export default function Home({ params }: { params: { id: string } }) {
     Telefone: "31999999999",
     CorPrimaria: "#ffffff",
     CorSecundaria: "#000000",
-    Logo: "string",
-    BgImage: null,
-    BgImageMobile: null,
     Texto: "texto",
     TemPixelFacebook: false,
     PixelFacebook: null,
@@ -194,11 +191,11 @@ export default function Home({ params }: { params: { id: string } }) {
   ) : (
     <C.Container
       secondaryColor={config.CorSecundaria}
-      bgUrl={`/parceiros/${params.id}/Bg.png`}
+      bgUrl={`/parceiros/${config.IdParceiro}/Bg.png`}
     >
       <C.NavbarContainer primaryColor={config.CorPrimaria}>
         <C.NavbarLogo
-          src={`/parceiros/${params.id}/Logo.svg`}
+          src={`/parceiros/${config.IdParceiro}/Logo.svg`}
           alt="logo"
           width="200"
           height="200"
@@ -214,7 +211,7 @@ export default function Home({ params }: { params: { id: string } }) {
       <C.Content>
         <C.ContentLeft
           secondaryColor={config.CorSecundaria}
-          bgUrl={`/parceiros/${params.id}/BgMobile.png`}
+          bgUrl={`/parceiros/${config.IdParceiro}/BgMobile.png`}
         >
           <C.TextDescription>{markedTexts}</C.TextDescription>
         </C.ContentLeft>
