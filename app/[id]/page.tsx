@@ -1,9 +1,7 @@
 "use client";
 
-import bg from "../../public/Bg.png";
 import Image from "next/image";
 import wppImage from "../../public/WhatsApp.png";
-import styles from "./page.module.css";
 import * as C from "./style";
 import {
   Button,
@@ -139,6 +137,18 @@ export default function Home({ params }: { params: { id: string } }) {
     });
   }, [config]);
 
+  const markedTexts = config.Texto.split("*").map((part, index) => {
+    if (index % 2 === 0) {
+      return part;
+    } else {
+      return (
+        <C.MarkedText key={index} secondaryColor={config.CorSecundaria}>
+          {part}
+        </C.MarkedText>
+      );
+    }
+  });
+
   async function clearFields() {
     setNome("");
     setTelefone("");
@@ -173,18 +183,6 @@ export default function Home({ params }: { params: { id: string } }) {
       Notiflix.Notify.failure("Houve um erro ao criar seu contato.");
     }
   }
-
-  const markedTexts = config.Texto.split("*").map((part, index) => {
-    if (index % 2 === 0) {
-      return part;
-    } else {
-      return (
-        <C.MarkedText key={index} secondaryColor={config.CorSecundaria}>
-          {part}
-        </C.MarkedText>
-      );
-    }
-  });
 
   return loading ? (
     <SkeletonLoad />
@@ -234,7 +232,7 @@ export default function Home({ params }: { params: { id: string } }) {
             </C.TitleArea>
             <ThemeProvider theme={theme}>
               <Stack direction="column" spacing={2}>
-                <div className={styles.input_area}>
+                <C.InputArea>
                   <label>Nome</label>
                   <TextField
                     id="nome"
@@ -247,9 +245,9 @@ export default function Home({ params }: { params: { id: string } }) {
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                   />
-                </div>
+                </C.InputArea>
                 <Stack spacing={2} direction="row">
-                  <div className={styles.input_area}>
+                  <C.InputArea>
                     <label>Email</label>
                     <TextField
                       id="email"
@@ -263,8 +261,8 @@ export default function Home({ params }: { params: { id: string } }) {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
-                  </div>
-                  <div className={styles.input_area}>
+                  </C.InputArea>
+                  <C.InputArea>
                     <label>Telefone</label>
                     <TextField
                       id="telefone"
@@ -277,9 +275,9 @@ export default function Home({ params }: { params: { id: string } }) {
                       value={telefone}
                       onChange={(e) => setTelefone(e.target.value)}
                     />
-                  </div>
+                  </C.InputArea>
                 </Stack>
-                <div className={styles.input_area}>
+                <C.InputArea>
                   <label>Valor médio da conta</label>
                   <TextField
                     id="valor"
@@ -292,7 +290,7 @@ export default function Home({ params }: { params: { id: string } }) {
                     value={valorConta}
                     onChange={(e) => setValorConta(e.target.value)}
                   />
-                </div>
+                </C.InputArea>
 
                 <Button
                   variant="contained"

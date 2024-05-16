@@ -155,3 +155,14 @@ export const Subtitle = styled.p`
     font-size: 10px;
   }
 `;
+
+export const InputArea = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  label {
+    color: white;
+  }
+`;
