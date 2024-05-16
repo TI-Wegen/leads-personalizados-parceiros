@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import Notiflix from "notiflix";
 import { ConfigResponse } from "../lib/dbQueries";
 import SkeletonLoad from "@/components/Skeleton";
+import * as Pixel from "react-facebook-pixel";
+import { useRouter } from "next/navigation";
 
 export default function Home({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
@@ -67,6 +69,8 @@ export default function Home({ params }: { params: { id: string } }) {
     TemPixelFacebook: false,
     PixelFacebook: null,
   });
+
+  const router = useRouter();
 
   useEffect(() => {
     const getConfig = async () => {
@@ -135,7 +139,26 @@ export default function Home({ params }: { params: { id: string } }) {
       ddd: dddPart,
       telefone: formattedRest,
     });
+
+    if (config.TemPixelFacebook) {
+      import("react-facebook-pixel")
+        .then((x) => x.default)
+        .then((ReactPixel) => {
+          ReactPixel.init(config.PixelFacebook!); // Substitua 'SUA_PIXEL_ID_AQUI' pelo seu ID de Pixel do Facebook
+          ReactPixel.pageView();
+        });
+    }
   }, [config]);
+
+  async function TrackLead() {
+    if (config.TemPixelFacebook) {
+      import("react-facebook-pixel")
+        .then((x) => x.default)
+        .then((ReactPixel) => {
+          ReactPixel.track("Lead");
+        });
+    }
+  }
 
   const markedTexts = config.Texto.split("*").map((part, index) => {
     if (index % 2 === 0) {
@@ -149,14 +172,14 @@ export default function Home({ params }: { params: { id: string } }) {
     }
   });
 
-  async function clearFields() {
+  async function ClearFields() {
     setNome("");
     setTelefone("");
     setEmail("");
     setValorConta("");
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function HandleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const body = {
@@ -178,7 +201,8 @@ export default function Home({ params }: { params: { id: string } }) {
     if (response.ok) {
       const data = await response.json();
       Notiflix.Notify.success(data.message);
-      await clearFields();
+      await ClearFields();
+      await TrackLead();
     } else {
       Notiflix.Notify.failure("Houve um erro ao criar seu contato.");
     }
@@ -216,7 +240,7 @@ export default function Home({ params }: { params: { id: string } }) {
         <C.ContentRight>
           <C.FormContato
             primaryColor={config.CorPrimaria}
-            onSubmit={handleSubmit}
+            onSubmit={HandleSubmit}
           >
             <C.TitleArea>
               <C.Title>
