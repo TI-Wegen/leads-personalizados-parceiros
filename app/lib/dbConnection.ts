@@ -11,7 +11,6 @@ connection.connect((err) => {
   if (err) {
     throw err;
   }
-  console.log("Conectado ao banco de dados!");
 });
 
 export default connection;
