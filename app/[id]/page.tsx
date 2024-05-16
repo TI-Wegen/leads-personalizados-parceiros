@@ -195,7 +195,7 @@ export default function Home({ params }: { params: { id: string } }) {
     >
       <C.NavbarContainer primaryColor={config.CorPrimaria}>
         <C.NavbarLogo
-          src={`/parceiros/${config.IdParceiro}/Logo.svg`}
+          src={`/parceiros/${config.IdParceiro}/Logo.png`}
           alt="logo"
           width="200"
           height="200"

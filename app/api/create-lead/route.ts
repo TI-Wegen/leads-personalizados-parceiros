@@ -8,6 +8,7 @@ import {
   GetParceiroResponse,
   VerifyIsBackoffice,
 } from "@/app/lib/dbQueries";
+import { LeadEmail, sendLeadEmail } from "@/app/lib/maillSender";
 import { GetDatas } from "@/app/lib/util";
 import { NextResponse } from "next/server";
 
@@ -25,84 +26,73 @@ export async function POST(req: Request) {
 
   try {
     var parceiroResponse = await GetParceiroResponse(idParceiro);
-  } catch (error) {
-    return NextResponse.json({
-      message: error,
-    });
-  }
 
-  var campanhaResponse: CampanhaResponse = {
-    idCupom: "0",
-    nomeCampanha: "Comercial",
-  };
+    var campanhaResponse: CampanhaResponse = {
+      idCupom: "0",
+      nomeCampanha: "Comercial",
+    };
 
-  try {
     var response = await GetInfoCampanhaById(parceiroResponse.idCampanha);
 
     if (!response || Object.keys(response).length > 0) {
       campanhaResponse = response;
     }
-  } catch (error) {
-    return NextResponse.json({
-      message: error,
-    });
-  }
 
-  var idBackoffice = "12";
+    var idBackoffice = "12";
 
-  try {
     var isBackoffice = await VerifyIsBackoffice(idParceiro);
-  } catch (error) {
-    return NextResponse.json({
-      message: error,
-    });
-  }
 
-  if (isBackoffice) {
-    idBackoffice = idParceiro!;
-  } else {
-    try {
+    if (isBackoffice) {
+      idBackoffice = idParceiro!;
+    } else {
       var idPlataforma = await GetIdPlataforma();
 
       idBackoffice = await GetBackoffice(idPlataforma);
-    } catch (error) {
-      return NextResponse.json({
-        message: error,
-      });
     }
-  }
 
-  var datas = GetDatas();
+    var datas = GetDatas();
 
-  var createNewLeadRequest: CreateNewLeadRequest = {
-    nomeCompleto: data.nome,
-    telefone: data.telefone,
-    email: data.email,
-    valorConta: data.valorConta,
-    statusLead: "Lead",
-    data: datas.data,
-    hora: datas.horas,
-    idCupom: campanhaResponse.idCupom,
-    idCaptador: idParceiro!,
-    timestamp: datas.timestamp,
-    economiaEstipulada: "0",
-    idBackoffice: idBackoffice,
-    tipoLead: "Comercial",
-    idCampanha: parceiroResponse.idCampanha,
-    nomeCampanha: campanhaResponse.nomeCampanha,
-    interesse: "C /",
-    statusCupom: "Solicitado",
-    idCorretorCampanha: "0",
-  };
+    var createNewLeadRequest: CreateNewLeadRequest = {
+      nomeCompleto: data.nome,
+      telefone: data.telefone,
+      email: data.email,
+      valorConta: data.valorConta,
+      statusLead: "Lead",
+      data: datas.data,
+      hora: datas.horas,
+      idCupom: campanhaResponse.idCupom,
+      idCaptador: idParceiro!,
+      timestamp: datas.timestamp,
+      economiaEstipulada: "0",
+      idBackoffice: idBackoffice,
+      tipoLead: "Comercial",
+      idCampanha: parceiroResponse.idCampanha,
+      nomeCampanha: campanhaResponse.nomeCampanha,
+      interesse: "C /",
+      statusCupom: "Solicitado",
+      idCorretorCampanha: "0",
+    };
 
-  try {
     var createLeadResult = await CreateNewLead(createNewLeadRequest);
+
+    var leadEmail: LeadEmail = {
+      nomeCliente: data.nome,
+      emailCliente: data.email,
+      nomeParceiro: "Tramonte",
+      corPrimaria: "#16663c",
+      nomePlataforma: "WeGen",
+      urlLogo: "https://app.wegen.com.br/Assets/img/WhatsApp.png",
+    };
+
+    await sendLeadEmail(leadEmail);
+
     return NextResponse.json({
       message: createLeadResult,
     });
   } catch (error) {
-    return NextResponse.json({
-      message: error,
+    console.log(error);
+    return new NextResponse("Não foi possível criar seu contato.", {
+      status: 500,
     });
   }
 }
