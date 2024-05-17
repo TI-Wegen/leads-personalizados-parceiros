@@ -17,7 +17,7 @@ import SkeletonLoad from "@/components/Skeleton";
 import * as Pixel from "react-facebook-pixel";
 import { useRouter } from "next/navigation";
 
-export default function Home({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState<string>("");
   const [telefone, setTelefone] = useState<string>("");
@@ -72,27 +72,48 @@ export default function Home({ params }: { params: { id: string } }) {
 
   const router = useRouter();
 
-  useEffect(() => {
-    const getConfig = async () => {
-      try {
-        const response = await fetch(`/api/get-config/${params.id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+  const parceiroExists = async () => {
+    try {
+      const response = await fetch(`/api/parceiro/existe/${params.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-        var data = await response.json();
+      var existe = await response.json();
 
-        console.log(data);
-
-        setConfig(data);
-
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
+      if (!existe) {
+        router.push("/12");
       }
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getConfig = async () => {
+    try {
+      const response = await fetch(`/api/config/${params.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      var data = await response.json();
+
+      console.log(data);
+
+      setConfig(data);
+
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    parceiroExists();
 
     getConfig();
   }, []);

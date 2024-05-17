@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { TextField } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 
 export const Container = styled.div`
   width: 100%;
@@ -22,8 +22,21 @@ export const Wrapper = styled.div`
 `;
 
 export const Card = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 30px;
   width: 100%;
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 10px 10px 23px -3px rgba(0, 0, 0, 0.56);
+  gap: 30px;
+
+  h3 {
+    margin: 0;
+  }
+`;
+
+export const FullWidthStack = styled(Stack)`
+  width: 100%;
 `;

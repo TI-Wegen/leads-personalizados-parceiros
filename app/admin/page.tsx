@@ -6,7 +6,7 @@ import { useState } from "react";
 import Notiflix from "notiflix";
 import { useRouter } from "next/navigation";
 
-export default function Login() {
+export default function Page() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();

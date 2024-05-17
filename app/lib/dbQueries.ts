@@ -38,6 +38,29 @@ export async function GetConfigResponse(
   }
 }
 
+export async function GetAllConfigsResponse(): Promise<ConfigResponse[]> {
+  try {
+    const result: ConfigResponse[] = await new Promise((resolve, reject) => {
+      connection.query(
+        `
+            SELECT *
+            FROM tblleadConfig
+        `,
+        [],
+        (error, result: ConfigResponse[]) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result);
+        }
+      );
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
 interface ParceiroResponse {
   idParceiro: string;
   idParceiroMaster: string;
@@ -261,6 +284,81 @@ export async function CreateNewLead(
       );
     });
     return "Criado com sucesso";
+  } catch (error) {
+    throw error;
+  }
+}
+
+export interface ParceiroSelectResponse {
+  idparceiro: string;
+  descparceiro: string;
+}
+
+export async function GetAllParceirosResponse(): Promise<
+  ParceiroSelectResponse[]
+> {
+  try {
+    const result: ParceiroSelectResponse[] = await new Promise(
+      (resolve, reject) => {
+        connection.query(
+          `
+            SELECT t.idparceiro , t.descparceiro  FROM tblcaptador t
+        `,
+          [],
+          (error, result: ParceiroSelectResponse[]) => {
+            if (error) {
+              reject(error);
+            }
+            resolve(result);
+          }
+        );
+      }
+    );
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function GetParceiroNomeById(idParceiro: string): Promise<string> {
+  try {
+    const result: string = await new Promise((resolve, reject) => {
+      connection.query(
+        `
+            SELECT t.descparceiro  FROM tblcaptador t WHERE t.idparceiro = ${idParceiro}
+        `,
+        [],
+        (error, result) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result[0].descparceiro);
+        }
+      );
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function ParceiroExists(idParceiro: string): Promise<string> {
+  try {
+    const result: string = await new Promise((resolve, reject) => {
+      connection.query(
+        `
+            SELECT EXISTS(SELECT * FROM tblcaptador WHERE idparceiro = ${idParceiro}) AS existe;
+        `,
+        [],
+        (error, result) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result[0].existe);
+        }
+      );
+    });
+    return result;
   } catch (error) {
     throw error;
   }
