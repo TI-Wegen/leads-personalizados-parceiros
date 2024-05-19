@@ -1,4 +1,9 @@
-import { GetAllConfigsResponse } from "@/app/lib/dbQueries";
+import {
+  ConfigRequest,
+  CreateConfig,
+  GetAllConfigsResponse,
+  GetConfigIdByParceiroId,
+} from "@/app/lib/dbQueries";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -13,12 +18,27 @@ export async function GET() {
   }
 }
 
-export async function POST() {
-  try {
-    var response = await GetAllConfigsResponse();
+export async function POST(req: Request) {
+  const data = await req.json();
 
-    return NextResponse.json(response);
+  try {
+    var configReq: ConfigRequest = {
+      IdParceiro: data.IdParceiro,
+      CorPrimaria: data.CorPrimaria,
+      CorSecundaria: data.CorSecundaria,
+      Nome: data.Nome,
+      Texto: data.Texto,
+      Telefone: data.Telefone,
+      TemPixelFacebook: data.TemPixelFacebook,
+      PixelFacebook: data.PixelFacebook,
+    };
+
+    await CreateConfig(configReq);
+
+    return NextResponse.json("OK");
   } catch (error) {
+    console.log(error);
+
     return new NextResponse("Houve um erro durante sua requisição.", {
       status: 500,
     });

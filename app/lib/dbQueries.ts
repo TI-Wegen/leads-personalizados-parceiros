@@ -363,3 +363,82 @@ export async function ParceiroExists(idParceiro: string): Promise<string> {
     throw error;
   }
 }
+
+export interface ConfigRequest {
+  IdParceiro: string;
+  Nome: string;
+  Telefone: string;
+  CorPrimaria: string;
+  CorSecundaria: string;
+  Texto: string;
+  TemPixelFacebook: boolean;
+  PixelFacebook: string | null;
+}
+
+export async function CreateConfig(request: ConfigRequest): Promise<string> {
+  try {
+    await new Promise<void>((resolve, reject) => {
+      connection.query(
+        `
+        INSERT INTO tblleadConfig (
+          Id,
+          IdParceiro,
+          Nome,
+          Telefone,
+          CorPrimaria,
+          CorSecundaria,
+          Texto,
+          TemPixelFacebook,
+          PixelFacebook
+        )
+        VALUES ( 
+          null,
+          '${request.IdParceiro}',
+          '${request.Nome}',
+          '${request.Telefone}',
+          '${request.CorPrimaria}',
+          '${request.CorSecundaria}',
+          '${request.Texto}',
+          '${request.TemPixelFacebook}',
+          '${request.PixelFacebook}'
+        );
+
+        `,
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return "Erro ao criar config";
+          }
+          resolve();
+        }
+      );
+    });
+    return "Criado com sucesso";
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function GetConfigIdByParceiroId(
+  idParceiro: string
+): Promise<string> {
+  try {
+    const result: string = await new Promise((resolve, reject) => {
+      connection.query(
+        `
+            SELECT Id  FROM tblleadConfig WHERE IdParceiro = ${idParceiro}
+        `,
+        [],
+        (error, result) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result[0].Id);
+        }
+      );
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}

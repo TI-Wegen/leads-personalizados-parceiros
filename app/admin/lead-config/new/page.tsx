@@ -3,16 +3,21 @@
 import { Autocomplete, Button, Checkbox, TextField } from "@mui/material";
 import * as C from "./style";
 import { useEffect, useState } from "react";
-import { ParceiroSelectResponse } from "@/app/lib/dbQueries";
+import { ConfigRequest, ParceiroSelectResponse } from "@/app/lib/dbQueries";
 import useAuth from "@/hooks/useAuth";
 import { MuiColorInput } from "mui-color-input";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import { useRouter } from "next/navigation";
+import Notiflix from "notiflix";
 
 export default function Page() {
   useAuth();
 
+  const router = useRouter();
+
   const [idParceiro, setIdParceiro] = useState("");
+  const [inputIdParceiro, setInputIdParceiro] = useState("");
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [corPrimaria, setCorPrimaria] = useState("#ffffff");
@@ -32,7 +37,12 @@ export default function Page() {
   );
   const [selectedBgMobile, setSelectedBgMobile] = useState<File | null>(null);
 
-  const [options, setOptions] = useState<ParceiroSelectResponse[]>([]);
+  const [options, setOptions] = useState<OptionsType[]>([]);
+
+  interface OptionsType {
+    label: string;
+    value: string;
+  }
 
   const getOptions = async () => {
     try {
@@ -73,7 +83,7 @@ export default function Page() {
         setLogoUrl(e.target!.result?.toString());
       };
       reader.readAsDataURL(event.target.files[0]);
-      setSelectedLogo(event.target.files[0]); // Armazena o arquivo selecionado
+      setSelectedLogo(event.target.files[0]);
     }
   };
   const handleBgChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +93,7 @@ export default function Page() {
         setBgUrl(e.target!.result?.toString());
       };
       reader.readAsDataURL(event.target.files[0]);
-      setSelectedBg(event.target.files[0]); // Armazena o arquivo selecionado
+      setSelectedBg(event.target.files[0]);
     }
   };
   const handleBgMobileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +103,55 @@ export default function Page() {
         setBgMobileUrl(e.target!.result?.toString());
       };
       reader.readAsDataURL(event.target.files[0]);
-      setSelectedBgMobile(event.target.files[0]); // Armazena o arquivo selecionado
+      setSelectedBgMobile(event.target.files[0]);
+    }
+  };
+
+  const createNewConfig = async () => {
+    var body = {
+      IdParceiro: idParceiro,
+      CorPrimaria: corPrimaria,
+      CorSecundaria: corSecundaria,
+      Nome: nome,
+      Texto: texto,
+      Telefone: telefone,
+      TemPixelFacebook: temPixelFacebook,
+      PixelFacebook: pixelFacebook,
+    };
+
+    const response = await fetch("/api/config", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.ok) {
+      const formData = new FormData();
+
+      formData.append("logo", selectedLogo!);
+      formData.append("bg", selectedBg!);
+      formData.append("bgMobile", selectedBgMobile!);
+
+      const imagesResponse = await fetch(
+        `/api/config/save-images/${body.IdParceiro}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (imagesResponse.ok) {
+        Notiflix.Notify.success("Criado com sucesso!");
+        router.back();
+      } else {
+        Notiflix.Notify.failure(
+          "Houve um erro ao criar as imagens do parceiro."
+        );
+      }
+    } else {
+      Notiflix.Notify.failure("Houve um erro ao criar a config do parceiro.");
     }
   };
 
@@ -106,13 +164,14 @@ export default function Page() {
             <C.FullWidthStack direction={"row"} spacing={2}>
               <Autocomplete
                 disablePortal
+                fullWidth
                 options={options}
                 onChange={(event, newValue) => {
                   if (newValue) {
-                    setIdParceiro(newValue.idparceiro);
+                    console.log("Valor selecionado:", newValue.value);
+                    setIdParceiro(newValue.value);
                   }
                 }}
-                fullWidth
                 renderInput={(params) => (
                   <TextField {...params} label="Parceiro" />
                 )}
@@ -252,7 +311,11 @@ export default function Page() {
               </C.ImageDiv>
             </C.FullWidthStack>
             <C.ButtonArea>
-              <Button variant="contained" color="success">
+              <Button
+                variant="contained"
+                color="success"
+                onClick={() => createNewConfig()}
+              >
                 Criar
               </Button>
             </C.ButtonArea>

@@ -170,7 +170,7 @@ export default function Page({ params }: { params: { id: string } }) {
     }
   }, [config]);
 
-  async function TrackLead() {
+  async function trackLead() {
     if (config.TemPixelFacebook) {
       import("react-facebook-pixel")
         .then((x) => x.default)
@@ -192,14 +192,14 @@ export default function Page({ params }: { params: { id: string } }) {
     }
   });
 
-  async function ClearFields() {
+  async function clearFields() {
     setNome("");
     setTelefone("");
     setEmail("");
     setValorConta("");
   }
 
-  async function HandleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const body = {
@@ -221,8 +221,8 @@ export default function Page({ params }: { params: { id: string } }) {
     if (response.ok) {
       const data = await response.json();
       Notiflix.Notify.success(data.message);
-      await ClearFields();
-      await TrackLead();
+      await clearFields();
+      await trackLead();
     } else {
       Notiflix.Notify.failure("Houve um erro ao criar seu contato.");
     }
@@ -260,7 +260,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <C.ContentRight>
           <C.FormContato
             primaryColor={config.CorPrimaria}
-            onSubmit={HandleSubmit}
+            onSubmit={handleSubmit}
           >
             <C.TitleArea>
               <C.Title>
