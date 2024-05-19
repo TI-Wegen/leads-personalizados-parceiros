@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 import Notiflix from "notiflix";
 import { ConfigResponse } from "../lib/dbQueries";
 import SkeletonLoad from "@/components/Skeleton";
-import * as Pixel from "react-facebook-pixel";
 import { useRouter } from "next/navigation";
 
 export default function Page({ params }: { params: { id: string } }) {
