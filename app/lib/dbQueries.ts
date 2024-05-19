@@ -38,6 +38,32 @@ export async function GetConfigResponse(
   }
 }
 
+export async function GetConfigResponseById(
+  id: string
+): Promise<ConfigResponse> {
+  try {
+    const result: ConfigResponse = await new Promise((resolve, reject) => {
+      connection.query(
+        `
+            SELECT *
+            FROM tblleadConfig 
+            WHERE id ='${id}'
+        `,
+        [],
+        (error, result: ConfigResponse[]) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result[0]);
+        }
+      );
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function GetAllConfigsResponse(): Promise<ConfigResponse[]> {
   try {
     const result: ConfigResponse[] = await new Promise((resolve, reject) => {
@@ -438,6 +464,38 @@ export async function GetConfigIdByParceiroId(
       );
     });
     return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function UpdateConfig(request: ConfigRequest): Promise<string> {
+  try {
+    await new Promise<void>((resolve, reject) => {
+      connection.query(
+        `
+        UPDATE tblleadConfig
+        SET 
+          IdParceiro='${request.IdParceiro}',
+          Nome='${request.Nome}', 
+          Telefone='${request.Telefone}', 
+          CorPrimaria='${request.CorPrimaria}', 
+          CorSecundaria='${request.CorSecundaria}', 
+          Texto='${request.Texto}', 
+          TemPixelFacebook='${request.TemPixelFacebook}', 
+          PixelFacebook='${request.PixelFacebook}'
+        WHERE IdParceiro='${request.IdParceiro}';
+        `,
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return "Erro ao editar config";
+          }
+          resolve();
+        }
+      );
+    });
+    return "Editado com sucesso";
   } catch (error) {
     throw error;
   }

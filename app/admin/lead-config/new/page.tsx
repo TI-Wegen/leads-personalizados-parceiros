@@ -17,7 +17,6 @@ export default function Page() {
   const router = useRouter();
 
   const [idParceiro, setIdParceiro] = useState("");
-  const [inputIdParceiro, setInputIdParceiro] = useState("");
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [corPrimaria, setCorPrimaria] = useState("#ffffff");
