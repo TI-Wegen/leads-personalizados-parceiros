@@ -26,7 +26,7 @@ function GeraHoras() {
   return horaAtual;
 }
 
-function GeraTimeStamp() {
+export function GeraTimeStamp() {
   const agora = new Date();
   const year = String(agora.getFullYear()).padStart(2, "0");
   const month = String(agora.getMonth() + 1).padStart(2, "0");
@@ -36,7 +36,7 @@ function GeraTimeStamp() {
   const seconds = String(agora.getSeconds()).padStart(2, "0");
   const milliseconds = String(agora.getMilliseconds()).padStart(6, "0");
 
-  const formattedDate = `${year}${month}${day}${hours}${minutes}${seconds}${milliseconds}`;
+  const formattedDate = `${day}${month}${year}${hours}${minutes}${seconds}${milliseconds}`;
 
   return formattedDate;
 }

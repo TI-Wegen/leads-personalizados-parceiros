@@ -5,6 +5,7 @@ import wppImage from "../../public/WhatsApp.png";
 import * as C from "./style";
 import {
   Button,
+  CircularProgress,
   Stack,
   TextField,
   ThemeProvider,
@@ -17,6 +18,7 @@ import SkeletonLoad from "@/components/Skeleton";
 import { useRouter } from "next/navigation";
 
 export default function Page({ params }: { params: { id: string } }) {
+  const [insideLoading, setInsideLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState<string>("");
   const [telefone, setTelefone] = useState<string>("");
@@ -201,6 +203,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    await setInsideLoading(true);
 
     const body = {
       idParceiro: params.id,
@@ -223,8 +226,10 @@ export default function Page({ params }: { params: { id: string } }) {
       Notiflix.Notify.success(data.message);
       await clearFields();
       await trackLead();
+      await setInsideLoading(false);
     } else {
       Notiflix.Notify.failure("Houve um erro ao criar seu contato.");
+      await setInsideLoading(false);
     }
   }
 
@@ -342,7 +347,11 @@ export default function Page({ params }: { params: { id: string } }) {
                   color="secondary"
                   type="submit"
                 >
-                  Solicitar Proposta
+                  {insideLoading ? (
+                    <CircularProgress color="primary" size={22} />
+                  ) : (
+                    "Solicitar Proposta"
+                  )}
                 </Button>
               </Stack>
             </ThemeProvider>

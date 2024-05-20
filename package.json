@@ -17,6 +17,7 @@
     "@types/ejs": "^3.1.5",
     "@types/mysql": "^2.15.26",
     "@types/nodemailer": "^6.4.15",
+    "basic-ftp": "^5.0.5",
     "ejs": "^3.1.10",
     "mui-color-input": "^2.0.3",
     "mysql": "^2.18.1",

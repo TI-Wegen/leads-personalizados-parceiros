@@ -373,7 +373,7 @@ export async function ParceiroExists(idParceiro: string): Promise<string> {
     const result: string = await new Promise((resolve, reject) => {
       connection.query(
         `
-            SELECT EXISTS(SELECT * FROM tblcaptador WHERE idparceiro = ${idParceiro}) AS existe;
+            SELECT EXISTS(SELECT * FROM tblcaptador t WHERE idparceiro = ${idParceiro} AND ativo = 'S') AS existe
         `,
         [],
         (error, result) => {
@@ -525,6 +525,57 @@ export async function UpdateAnexoLead(
       );
     });
     return "Anexado com sucesso.";
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function LeadExists(idLead: string): Promise<string> {
+  try {
+    const result: string = await new Promise((resolve, reject) => {
+      connection.query(
+        `
+            SELECT EXISTS(SELECT * FROM tbllead  WHERE idlead = ${idLead} AND statuslead != 'Cancelado') AS existe
+        `,
+        [],
+        (error, result) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result[0].existe);
+        }
+      );
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export interface LeadResponse {
+  anexouConta: boolean;
+  idLead: string;
+  nome: string;
+  idParceiro: string;
+}
+
+export async function GetLeadData(idLead: string): Promise<LeadResponse> {
+  try {
+    const result: LeadResponse = await new Promise((resolve, reject) => {
+      connection.query(
+        `
+            SELECT (SELECT t.urlanexo IS NOT NULL) as anexouConta, t.idlead as idLead, t.nomecompleto as nome, t.idCaptador as idParceiro FROM tbllead t WHERE idlead = ${idLead}
+        `,
+        [],
+        (error, result) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result[0]);
+        }
+      );
+    });
+    return result;
   } catch (error) {
     throw error;
   }
