@@ -258,7 +258,11 @@ export default function Page() {
               </C.ButtonDiv>
 
               <C.ImageDiv>
-                {logoUrl ? <img src={logoUrl} alt="Uploaded" /> : <AddIcon />}
+                {logoUrl ? (
+                  <C.CustomImage src={logoUrl} alt="Uploaded" />
+                ) : (
+                  <AddIcon />
+                )}
               </C.ImageDiv>
             </C.FullWidthStack>
             <C.FullWidthStack direction={"row"} spacing={2}>
@@ -280,7 +284,11 @@ export default function Page() {
               </C.ButtonDiv>
 
               <C.ImageDiv>
-                {bgUrl ? <img src={bgUrl} alt="Uploaded" /> : <AddIcon />}
+                {bgUrl ? (
+                  <C.CustomImage src={bgUrl} alt="Uploaded" />
+                ) : (
+                  <AddIcon />
+                )}
               </C.ImageDiv>
             </C.FullWidthStack>
             <C.FullWidthStack direction={"row"} spacing={2}>
@@ -303,7 +311,7 @@ export default function Page() {
 
               <C.ImageDiv>
                 {bgMobileUrl ? (
-                  <img src={bgMobileUrl} alt="Uploaded" />
+                  <C.CustomImage src={bgMobileUrl} alt="Uploaded" />
                 ) : (
                   <AddIcon />
                 )}

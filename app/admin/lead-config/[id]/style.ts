@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { Stack, TextField } from "@mui/material";
+import { Stack } from "@mui/material";
+import Image from "next/image";
 
 export const Container = styled.div`
   width: 100%;
@@ -89,11 +90,11 @@ export const ImageDiv = styled.div`
   align-items: center;
   justify-content: center;
   aspect-ratio: 16/9;
+`;
 
-  img {
-    width: 100%;
-    object-fit: scale-down;
-  }
+export const CustomImage = styled(Image)`
+  width: 100%;
+  object-fit: scale-down;
 `;
 
 export const VisuallyHiddenInput = styled("input")({

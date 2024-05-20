@@ -3,10 +3,9 @@
 import { Autocomplete, Button, Checkbox, TextField } from "@mui/material";
 import * as C from "./style";
 import { useEffect, useState } from "react";
-import { ConfigRequest, ParceiroSelectResponse } from "@/app/lib/dbQueries";
+import { ParceiroSelectResponse } from "@/app/lib/dbQueries";
 import useAuth from "@/hooks/useAuth";
 import { MuiColorInput } from "mui-color-input";
-import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { useRouter } from "next/navigation";
 import Notiflix from "notiflix";
@@ -288,9 +287,12 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <C.ImageDiv>
                 {logoUrl ? (
-                  <img src={logoUrl} alt="Uploaded" />
+                  <C.CustomImage src={logoUrl} alt="Uploaded" />
                 ) : (
-                  <img src={`/parceiros/${idParceiro}/Logo.png`} alt="img" />
+                  <C.CustomImage
+                    src={`/parceiros/${idParceiro}/Logo.png`}
+                    alt="img"
+                  />
                 )}
               </C.ImageDiv>
             </C.FullWidthStack>
@@ -314,9 +316,12 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <C.ImageDiv>
                 {bgUrl ? (
-                  <img src={bgUrl} alt="Uploaded" />
+                  <C.CustomImage src={bgUrl} alt="Uploaded" />
                 ) : (
-                  <img src={`/parceiros/${idParceiro}/Bg.png`} alt="img" />
+                  <C.CustomImage
+                    src={`/parceiros/${idParceiro}/Bg.png`}
+                    alt="img"
+                  />
                 )}
               </C.ImageDiv>
             </C.FullWidthStack>
@@ -340,9 +345,9 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <C.ImageDiv>
                 {bgMobileUrl ? (
-                  <img src={bgMobileUrl} alt="Uploaded" />
+                  <C.CustomImage src={bgMobileUrl} alt="Uploaded" />
                 ) : (
-                  <img
+                  <C.CustomImage
                     src={`/parceiros/${idParceiro}/BgMobile.png`}
                     alt="img"
                   />
