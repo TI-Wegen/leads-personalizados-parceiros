@@ -500,3 +500,32 @@ export async function UpdateConfig(request: ConfigRequest): Promise<string> {
     throw error;
   }
 }
+
+export interface AnexoLeadRequest {
+  idLead: string;
+  urlAnexo: string;
+}
+
+export async function UpdateAnexoLead(
+  request: AnexoLeadRequest
+): Promise<string> {
+  try {
+    await new Promise<void>((resolve, reject) => {
+      connection.query(
+        `
+        UPDATE tbllead SET urlanexo='${request.urlAnexo}', statuslead='Conta Anexada' WHERE idlead='${request.idLead}'
+        `,
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return "Erro ao adicionar anexo.";
+          }
+          resolve();
+        }
+      );
+    });
+    return "Anexado com sucesso.";
+  } catch (error) {
+    throw error;
+  }
+}
