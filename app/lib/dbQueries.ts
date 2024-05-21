@@ -1,4 +1,5 @@
-import connection from "@/app/lib/dbConnection";
+import { RowDataPacket } from "mysql2/promise";
+import { connection2 } from "./dbConnection";
 
 export interface ConfigResponse {
   Id: string;
@@ -14,76 +15,102 @@ export interface ConfigResponse {
 
 export async function GetConfigResponse(
   idParceiro: string
-): Promise<ConfigResponse> {
+): Promise<ConfigResponse | null> {
   try {
-    const result: ConfigResponse = await new Promise((resolve, reject) => {
-      connection.query(
-        `
-            SELECT *
-            FROM tblleadConfig 
-            WHERE idParceiro='${idParceiro}'
-        `,
-        [],
-        (error, result: ConfigResponse[]) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0]);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `
+      SELECT *
+      FROM tblleadConfig 
+      WHERE idParceiro='${idParceiro}'
+    `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: ConfigResponse = {
+        Id: rows[0].Id,
+        CorPrimaria: rows[0].CorPrimaria,
+        CorSecundaria: rows[0].CorSecundaria,
+        IdParceiro: rows[0].IdParceiro,
+        Nome: rows[0].Nome,
+        PixelFacebook: rows[0].PixelFacebook,
+        Telefone: rows[0].Telefone,
+        TemPixelFacebook: rows[0].TemPixelFacebook === 1,
+        Texto: rows[0].Texto,
+      };
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
 export async function GetConfigResponseById(
   id: string
-): Promise<ConfigResponse> {
+): Promise<ConfigResponse | null> {
   try {
-    const result: ConfigResponse = await new Promise((resolve, reject) => {
-      connection.query(
-        `
+    const sql = `
             SELECT *
             FROM tblleadConfig 
             WHERE id ='${id}'
-        `,
-        [],
-        (error, result: ConfigResponse[]) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0]);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+        `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: ConfigResponse = {
+        Id: rows[0].Id,
+        CorPrimaria: rows[0].CorPrimaria,
+        CorSecundaria: rows[0].CorSecundaria,
+        IdParceiro: rows[0].IdParceiro,
+        Nome: rows[0].Nome,
+        PixelFacebook: rows[0].PixelFacebook,
+        Telefone: rows[0].Telefone,
+        TemPixelFacebook: rows[0].TemPixelFacebook === 1,
+        Texto: rows[0].Texto,
+      };
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
-export async function GetAllConfigsResponse(): Promise<ConfigResponse[]> {
+export async function GetAllConfigsResponse(): Promise<
+  ConfigResponse[] | null
+> {
   try {
-    const result: ConfigResponse[] = await new Promise((resolve, reject) => {
-      connection.query(
-        `
-            SELECT *
-            FROM tblleadConfig
-        `,
-        [],
-        (error, result: ConfigResponse[]) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `
+      SELECT *
+      FROM tblleadConfig
+    `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: ConfigResponse[] = rows.map((row) => ({
+        Id: row.Id,
+        CorPrimaria: row.CorPrimaria,
+        CorSecundaria: row.CorSecundaria,
+        IdParceiro: row.IdParceiro,
+        Nome: row.Nome,
+        PixelFacebook: row.PixelFacebook,
+        Telefone: row.Telefone,
+        TemPixelFacebook: row.TemPixelFacebook === 1,
+        Texto: row.Texto,
+      }));
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
@@ -96,30 +123,33 @@ interface ParceiroResponse {
 
 export async function GetParceiroResponse(
   idParceiro: string
-): Promise<ParceiroResponse> {
+): Promise<ParceiroResponse | null> {
   try {
-    const result: ParceiroResponse = await new Promise((resolve, reject) => {
-      connection.query(
-        `
+    const sql = `
             SELECT idparceiro as idParceiro,
                 idparceiromaster as idParceiroMaster,
                 idCampanha,
                 descparceiro as descParceiro 
             FROM tblcaptador 
             WHERE idparceiro='${idParceiro}' AND ativo='S'
-        `,
-        [],
-        (error, result: ParceiroResponse[]) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0]);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+        `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: ParceiroResponse = {
+        descParceiro: rows[0].descParceiro,
+        idCampanha: rows[0].idCampanha,
+        idParceiro: rows[0].idParceiro,
+        idParceiroMaster: rows[0].idParceiroMaster,
+      };
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
@@ -130,81 +160,76 @@ export interface CampanhaResponse {
 
 export async function GetInfoCampanhaById(
   idCampanha: string
-): Promise<CampanhaResponse> {
+): Promise<CampanhaResponse | null> {
   try {
-    const result: CampanhaResponse = await new Promise((resolve, reject) => {
-      connection.query(
-        `SELECT desctitulolead AS nomeCampanha, idCupom FROM tblcampanha WHERE idCampanha=${idCampanha} LIMIT 1`,
-        [],
-        (error, result: CampanhaResponse[]) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0]);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `SELECT desctitulolead AS nomeCampanha, idCupom FROM tblcampanha WHERE idCampanha=${idCampanha} LIMIT 1`;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: CampanhaResponse = {
+        idCupom: rows[0].idCupom,
+        nomeCampanha: rows[0].nomeCampanha,
+      };
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
-export async function VerifyIsBackoffice(idParceiro: string): Promise<boolean> {
+export async function VerifyIsBackoffice(
+  idParceiro: string
+): Promise<boolean | null> {
   try {
-    const result: boolean = await new Promise((resolve, reject) => {
-      connection.query(
-        `SELECT 
+    const sql = `SELECT 
         CASE 
             WHEN backoffice = 'S' THEN true
                 ELSE false
             END AS backoffice_status
         FROM tblcaptador 
-        WHERE idparceiro = '${idParceiro}'`,
-        [],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else if (result.length > 0) {
-            const backofficeStatus = result[0].backoffice_status;
-            resolve(backofficeStatus);
-          } else {
-            resolve(false);
-          }
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+        WHERE idparceiro = '${idParceiro}'`;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: boolean = rows[0].backoffice_status === 1;
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
-export async function GetIdPlataforma(): Promise<string> {
+export async function GetIdPlataforma(): Promise<string | null> {
   try {
-    const result: string = await new Promise((resolve, reject) => {
-      connection.query(
-        `SELECT idParceiroPlataforma FROM tblsettingsplataforma WHERE idSettings='1'`,
-        [],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0].idParceiroPlataforma);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `SELECT idParceiroPlataforma FROM tblsettingsplataforma WHERE idSettings='1'`;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: string = rows[0].idParceiroPlataforma;
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
-export async function GetBackoffice(idPlataforma: string): Promise<string> {
+export async function GetBackoffice(
+  idPlataforma: string
+): Promise<string | null> {
   try {
-    const result: string = await new Promise((resolve, reject) => {
-      connection.query(
-        `   
+    const sql = `   
             SELECT idBackoffice,COUNT(tbllead.idlead) AS total 
             FROM tbllead,tblcaptador 
             WHERE tbllead.idBackoffice = tblcaptador.idparceiro 
@@ -216,19 +241,19 @@ export async function GetBackoffice(idPlataforma: string): Promise<string> {
             AND idparceiro != ${idPlataforma} 
             GROUP BY idBackoffice 
             ORDER BY total ASC
-        `,
-        [],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0].idBackoffice);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+        `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: string = rows[0].idBackoffice;
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
@@ -255,11 +280,9 @@ export interface CreateNewLeadRequest {
 
 export async function CreateNewLead(
   createNewLeadRequest: CreateNewLeadRequest
-): Promise<string> {
+): Promise<string | null> {
   try {
-    await new Promise<void>((resolve, reject) => {
-      connection.query(
-        `
+    const sql = `
         INSERT INTO tbllead (
             nomecompleto,
             telefone,
@@ -299,19 +322,14 @@ export async function CreateNewLead(
             '${createNewLeadRequest.statusCupom}',
             '${createNewLeadRequest.idCorretorCampanha}'
         )
-        `,
-        (error, result) => {
-          if (error) {
-            reject(error);
-            return "Erro ao criar lead";
-          }
-          resolve();
-        }
-      );
-    });
-    return "Criado com sucesso";
-  } catch (error) {
-    throw error;
+        `;
+
+    await connection2.query<RowDataPacket[]>(sql);
+
+    return "Criado com sucesso!";
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
@@ -321,72 +339,75 @@ export interface ParceiroSelectResponse {
 }
 
 export async function GetAllParceirosResponse(): Promise<
-  ParceiroSelectResponse[]
+  ParceiroSelectResponse[] | null
 > {
   try {
-    const result: ParceiroSelectResponse[] = await new Promise(
-      (resolve, reject) => {
-        connection.query(
-          `
-            SELECT t.idparceiro , t.descparceiro  FROM tblcaptador t
-        `,
-          [],
-          (error, result: ParceiroSelectResponse[]) => {
-            if (error) {
-              reject(error);
-            }
-            resolve(result);
-          }
-        );
-      }
-    );
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `
+      SELECT t.idparceiro , t.descparceiro  FROM tblcaptador t WHERE t.ativo = 'S'
+    `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: ParceiroSelectResponse[] = rows.map((row) => ({
+        descparceiro: row.descparceiro,
+        idparceiro: row.idparceiro,
+      }));
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
-export async function GetParceiroNomeById(idParceiro: string): Promise<string> {
+export async function GetParceiroNomeById(
+  idParceiro: string
+): Promise<string | null> {
   try {
-    const result: string = await new Promise((resolve, reject) => {
-      connection.query(
-        `
-            SELECT t.descparceiro  FROM tblcaptador t WHERE t.idparceiro = ${idParceiro}
-        `,
-        [],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0].descparceiro);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `SELECT t.descparceiro  FROM tblcaptador t WHERE t.idparceiro = ${idParceiro}`;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: string = rows[0].descparceiro;
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
-export async function ParceiroExists(idParceiro: string): Promise<string> {
+interface ParceiroExistsResponse {
+  existe: boolean;
+}
+
+export async function ParceiroExists(
+  idParceiro: string
+): Promise<ParceiroExistsResponse | null> {
   try {
-    const result: string = await new Promise((resolve, reject) => {
-      connection.query(
-        `
-            SELECT EXISTS(SELECT * FROM tblcaptador t WHERE idparceiro = ${idParceiro} AND ativo = 'S') AS existe
-        `,
-        [],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0].existe);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `
+      SELECT EXISTS(SELECT * FROM tblcaptador t WHERE idparceiro = ? AND ativo = 'S') AS existe
+    `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql, [idParceiro]);
+
+    if (rows.length > 0) {
+      const result: ParceiroExistsResponse = {
+        existe: rows[0].existe === 1,
+      };
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
@@ -401,11 +422,11 @@ export interface ConfigRequest {
   PixelFacebook: string | null;
 }
 
-export async function CreateConfig(request: ConfigRequest): Promise<string> {
+export async function CreateConfig(
+  request: ConfigRequest
+): Promise<string | null> {
   try {
-    await new Promise<void>((resolve, reject) => {
-      connection.query(
-        `
+    const sql = `
         INSERT INTO tblleadConfig (
           Id,
           IdParceiro,
@@ -429,51 +450,42 @@ export async function CreateConfig(request: ConfigRequest): Promise<string> {
           '${request.PixelFacebook}'
         );
 
-        `,
-        (error, result) => {
-          if (error) {
-            reject(error);
-            return "Erro ao criar config";
-          }
-          resolve();
-        }
-      );
-    });
-    return "Criado com sucesso";
-  } catch (error) {
-    throw error;
+        `;
+
+    await connection2.query<RowDataPacket[]>(sql);
+
+    return "Criado com sucesso!";
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
 export async function GetConfigIdByParceiroId(
   idParceiro: string
-): Promise<string> {
+): Promise<string | null> {
   try {
-    const result: string = await new Promise((resolve, reject) => {
-      connection.query(
-        `
-            SELECT Id  FROM tblleadConfig WHERE IdParceiro = ${idParceiro}
-        `,
-        [],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0].Id);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `SELECT Id FROM tblleadConfig WHERE IdParceiro = ${idParceiro}`;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: string = rows[0].Id;
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
-export async function UpdateConfig(request: ConfigRequest): Promise<string> {
+export async function UpdateConfig(
+  request: ConfigRequest
+): Promise<string | null> {
   try {
-    await new Promise<void>((resolve, reject) => {
-      connection.query(
-        `
+    const sql = `
         UPDATE tblleadConfig
         SET 
           IdParceiro='${request.IdParceiro}',
@@ -485,19 +497,14 @@ export async function UpdateConfig(request: ConfigRequest): Promise<string> {
           TemPixelFacebook='${request.TemPixelFacebook}', 
           PixelFacebook='${request.PixelFacebook}'
         WHERE IdParceiro='${request.IdParceiro}';
-        `,
-        (error, result) => {
-          if (error) {
-            reject(error);
-            return "Erro ao editar config";
-          }
-          resolve();
-        }
-      );
-    });
-    return "Editado com sucesso";
-  } catch (error) {
-    throw error;
+        `;
+
+    await connection2.query<RowDataPacket[]>(sql);
+
+    return "Editado com sucesso!";
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
@@ -508,47 +515,36 @@ export interface AnexoLeadRequest {
 
 export async function UpdateAnexoLead(
   request: AnexoLeadRequest
-): Promise<string> {
+): Promise<string | null> {
   try {
-    await new Promise<void>((resolve, reject) => {
-      connection.query(
-        `
+    const sql = `
         UPDATE tbllead SET urlanexo='${request.urlAnexo}', statuslead='Conta Anexada' WHERE idlead='${request.idLead}'
-        `,
-        (error, result) => {
-          if (error) {
-            reject(error);
-            return "Erro ao adicionar anexo.";
-          }
-          resolve();
-        }
-      );
-    });
-    return "Anexado com sucesso.";
-  } catch (error) {
-    throw error;
+        `;
+
+    await connection2.query<RowDataPacket[]>(sql);
+
+    return "Editado com sucesso!";
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
-export async function LeadExists(idLead: string): Promise<string> {
+export async function LeadExists(idLead: string): Promise<boolean | null> {
   try {
-    const result: string = await new Promise((resolve, reject) => {
-      connection.query(
-        `
-            SELECT EXISTS(SELECT * FROM tbllead  WHERE idlead = ${idLead} AND statuslead != 'Cancelado') AS existe
-        `,
-        [],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0].existe);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `SELECT EXISTS(SELECT * FROM tbllead  WHERE idlead = ${idLead} AND statuslead != 'Cancelado') AS existe`;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: boolean = rows[0].existe === 1;
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
@@ -559,24 +555,29 @@ export interface LeadResponse {
   idParceiro: string;
 }
 
-export async function GetLeadData(idLead: string): Promise<LeadResponse> {
+export async function GetLeadData(
+  idLead: string
+): Promise<LeadResponse | null> {
   try {
-    const result: LeadResponse = await new Promise((resolve, reject) => {
-      connection.query(
-        `
-            SELECT (SELECT t.urlanexo IS NOT NULL) as anexouConta, t.idlead as idLead, t.nomecompleto as nome, t.idCaptador as idParceiro FROM tbllead t WHERE idlead = ${idLead}
-        `,
-        [],
-        (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(result[0]);
-        }
-      );
-    });
-    return result;
-  } catch (error) {
-    throw error;
+    const sql = `
+                    SELECT (SELECT t.urlanexo IS NOT NULL) as anexouConta, t.idlead as idLead, t.nomecompleto as nome, t.idCaptador as idParceiro FROM tbllead t WHERE idlead = ${idLead}
+                `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: LeadResponse = {
+        anexouConta: rows[0].anexouConta === 1,
+        idLead: rows[0].idLead,
+        idParceiro: rows[0].idParceiro,
+        nome: rows[0].nome,
+      };
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }

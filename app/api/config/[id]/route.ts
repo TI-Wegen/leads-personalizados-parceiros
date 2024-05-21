@@ -13,7 +13,7 @@ export async function GET(
       response = await GetConfigResponse("12");
 
       if (nome) {
-        response.Texto = `*${nome.toUpperCase()} CONVIDA* VOCÊ A ECONOMIZAR ATÉ *25% EM SUA TARIFA DE ENERGIA.*`;
+        response!.Texto = `*${nome.toUpperCase()} CONVIDA* VOCÊ A ECONOMIZAR ATÉ *25% EM SUA TARIFA DE ENERGIA.*`;
       }
     }
 

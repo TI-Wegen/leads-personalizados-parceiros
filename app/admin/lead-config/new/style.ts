@@ -90,11 +90,11 @@ export const ImageDiv = styled.div`
   align-items: center;
   justify-content: center;
   aspect-ratio: 16/9;
-`;
 
-export const CustomImage = styled(Image)`
-  width: 100%;
-  object-fit: scale-down;
+  img {
+    width: 100%;
+    object-fit: scale-down;
+  }
 `;
 
 export const VisuallyHiddenInput = styled("input")({

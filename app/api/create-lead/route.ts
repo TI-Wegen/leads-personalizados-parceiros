@@ -32,7 +32,15 @@ export async function POST(req: Request) {
       nomeCampanha: "Comercial",
     };
 
+    if (parceiroResponse == null) {
+      throw "Parceiro não encontrado.";
+    }
+
     var response = await GetInfoCampanhaById(parceiroResponse.idCampanha);
+
+    if (response == null) {
+      throw "Campanha não encontrada.";
+    }
 
     if (!response || Object.keys(response).length > 0) {
       campanhaResponse = response;
@@ -47,7 +55,17 @@ export async function POST(req: Request) {
     } else {
       var idPlataforma = await GetIdPlataforma();
 
-      idBackoffice = await GetBackoffice(idPlataforma);
+      if (idPlataforma == null) {
+        throw "Plataforma não encontrada.";
+      }
+
+      var backofficeResponse = await GetBackoffice(idPlataforma);
+
+      if (backofficeResponse == null) {
+        throw "Backoffice não encontrado.";
+      }
+
+      idBackoffice = backofficeResponse;
     }
 
     var datas = GetDatas();

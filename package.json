@@ -15,12 +15,11 @@
     "@mui/material": "^5.15.17",
     "@mui/x-data-grid": "^7.4.0",
     "@types/ejs": "^3.1.5",
-    "@types/mysql": "^2.15.26",
     "@types/nodemailer": "^6.4.15",
     "basic-ftp": "^5.0.5",
     "ejs": "^3.1.10",
     "mui-color-input": "^2.0.3",
-    "mysql": "^2.18.1",
+    "mysql2": "^3.9.7",
     "next": "14.2.3",
     "nodemailer": "^6.9.13",
     "notiflix": "^3.2.7",
@@ -29,7 +28,7 @@
     "react-facebook-pixel": "^1.0.4"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.12.12",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

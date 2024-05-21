@@ -287,12 +287,9 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <C.ImageDiv>
                 {logoUrl ? (
-                  <C.CustomImage src={logoUrl} alt="Uploaded" />
+                  <img src={logoUrl} alt="Uploaded" />
                 ) : (
-                  <C.CustomImage
-                    src={`/parceiros/${idParceiro}/Logo.png`}
-                    alt="img"
-                  />
+                  <img src={`/parceiros/${idParceiro}/Logo.png`} />
                 )}
               </C.ImageDiv>
             </C.FullWidthStack>
@@ -316,12 +313,9 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <C.ImageDiv>
                 {bgUrl ? (
-                  <C.CustomImage src={bgUrl} alt="Uploaded" />
+                  <img src={bgUrl} alt="Uploaded" />
                 ) : (
-                  <C.CustomImage
-                    src={`/parceiros/${idParceiro}/Bg.png`}
-                    alt="img"
-                  />
+                  <img src={`/parceiros/${idParceiro}/Bg.png`} alt="img" />
                 )}
               </C.ImageDiv>
             </C.FullWidthStack>
@@ -345,9 +339,9 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <C.ImageDiv>
                 {bgMobileUrl ? (
-                  <C.CustomImage src={bgMobileUrl} alt="Uploaded" />
+                  <img src={bgMobileUrl} alt="Uploaded" />
                 ) : (
-                  <C.CustomImage
+                  <img
                     src={`/parceiros/${idParceiro}/BgMobile.png`}
                     alt="img"
                   />

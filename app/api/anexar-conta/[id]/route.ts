@@ -1,9 +1,4 @@
-import {
-  AnexoLeadRequest,
-  GetConfigResponse,
-  GetParceiroNomeById,
-  UpdateAnexoLead,
-} from "@/app/lib/dbQueries";
+import { AnexoLeadRequest, UpdateAnexoLead } from "@/app/lib/dbQueries";
 import { NextResponse } from "next/server";
 import { Client } from "basic-ftp";
 import fs from "fs/promises";
