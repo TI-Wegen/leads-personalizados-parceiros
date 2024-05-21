@@ -22,11 +22,11 @@ export const NavbarContainer = styled.div<{ primaryColor: string }>`
   align-items: center;
   padding: 20px 50px;
   background: ${(props) => props.primaryColor};
-`;
 
-export const NavbarLogo = styled(Image)`
-  width: 120px;
-  height: auto;
+  img {
+    width: 120px;
+    height: auto;
+  }
 `;
 
 export const Wpp = styled.a`
