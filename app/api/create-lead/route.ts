@@ -3,6 +3,7 @@ import {
   CreateNewLead,
   CreateNewLeadRequest,
   GetBackoffice,
+  GetConfigResponse,
   GetIdPlataforma,
   GetInfoCampanhaById,
   GetParceiroResponse,
@@ -91,15 +92,21 @@ export async function POST(req: Request) {
       idCorretorCampanha: "0",
     };
 
+    var config = await GetConfigResponse(idParceiro);
+
+    if (config == null) {
+      throw "Config não encontrada.";
+    }
+
     var createLeadResult = await CreateNewLead(createNewLeadRequest);
 
     var leadEmail: LeadEmail = {
       nomeCliente: data.nome,
       emailCliente: data.email,
-      nomeParceiro: "Tramonte",
-      corPrimaria: "#16663c",
+      nomeParceiro: config.Nome,
+      corPrimaria: config.CorPrimaria,
       nomePlataforma: "WeGen",
-      urlLogo: "https://app.wegen.com.br/Assets/img/WhatsApp.png",
+      urlLogo: `${process.env.SITE_URL}/parceiros/${idParceiro}/Logo.png`,
     };
 
     await sendLeadEmail(leadEmail);
