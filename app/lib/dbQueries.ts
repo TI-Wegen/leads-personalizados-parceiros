@@ -119,6 +119,7 @@ interface ParceiroResponse {
   idParceiroMaster: string;
   idCampanha: string;
   descParceiro: string;
+  email: string;
 }
 
 export async function GetParceiroResponse(
@@ -129,7 +130,8 @@ export async function GetParceiroResponse(
             SELECT idparceiro as idParceiro,
                 idparceiromaster as idParceiroMaster,
                 idCampanha,
-                descparceiro as descParceiro 
+                descparceiro as descParceiro,
+                email
             FROM tblcaptador 
             WHERE idparceiro='${idParceiro}' AND ativo='S'
         `;
@@ -142,6 +144,7 @@ export async function GetParceiroResponse(
         idCampanha: rows[0].idCampanha,
         idParceiro: rows[0].idParceiro,
         idParceiroMaster: rows[0].idParceiroMaster,
+        email: rows[0].email,
       };
       return result;
     } else {
@@ -572,6 +575,27 @@ export async function GetLeadData(
         idParceiro: rows[0].idParceiro,
         nome: rows[0].nome,
       };
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function GetLeadIdByTimeStampAndParceiro(
+  idParceiro: string,
+  timestamp: string
+): Promise<string | null> {
+  try {
+    const sql = `SELECT t.idlead FROM tbllead t WHERE t.idCaptador = ${idParceiro} AND t.timestamp = '${timestamp}'`;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: string = rows[0].idlead;
       return result;
     } else {
       return null;

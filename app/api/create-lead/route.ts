@@ -6,10 +6,16 @@ import {
   GetConfigResponse,
   GetIdPlataforma,
   GetInfoCampanhaById,
+  GetLeadIdByTimeStampAndParceiro,
   GetParceiroResponse,
   VerifyIsBackoffice,
 } from "@/app/lib/dbQueries";
-import { LeadEmail, sendLeadEmail } from "@/app/lib/maillSender";
+import {
+  LeadEmail,
+  LeadParceiroEmail,
+  sendLeadEmail,
+  sendLeadParceiroEmail,
+} from "@/app/lib/maillSender";
 import { GetDatas } from "@/app/lib/util";
 import { NextResponse } from "next/server";
 
@@ -100,6 +106,15 @@ export async function POST(req: Request) {
 
     var createLeadResult = await CreateNewLead(createNewLeadRequest);
 
+    var leadId = await GetLeadIdByTimeStampAndParceiro(
+      createNewLeadRequest.idCaptador,
+      createNewLeadRequest.timestamp
+    );
+
+    if (leadId == null) {
+      throw "Id não encontrado.";
+    }
+
     var leadEmail: LeadEmail = {
       nomeCliente: data.nome,
       emailCliente: data.email,
@@ -107,9 +122,20 @@ export async function POST(req: Request) {
       corPrimaria: config.CorPrimaria,
       nomePlataforma: "WeGen",
       urlLogo: `${process.env.SITE_URL}/parceiros/${idParceiro}/Logo.png`,
+      urlAnexarConta: `${process.env.SITE_URL}/anexar-conta/${leadId}`,
     };
 
     await sendLeadEmail(leadEmail);
+
+    var leadParceiroEmail: LeadParceiroEmail = {
+      corPrimaria: config.CorPrimaria,
+      emailParceiro: parceiroResponse.email,
+      nomeParceiro: parceiroResponse.descParceiro,
+      nomePlataforma: "WeGen",
+      urlLogo: `${process.env.SITE_URL}/parceiros/${idParceiro}/Logo.png`,
+    };
+
+    await sendLeadParceiroEmail(leadParceiroEmail);
 
     return NextResponse.json({
       message: createLeadResult,

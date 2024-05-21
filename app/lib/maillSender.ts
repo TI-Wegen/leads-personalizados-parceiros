@@ -19,6 +19,7 @@ export interface LeadEmail {
   nomeParceiro: string;
   corPrimaria: string;
   urlLogo: string;
+  urlAnexarConta: string;
 }
 
 export async function sendLeadEmail(leadEmail: LeadEmail) {
@@ -28,12 +29,44 @@ export async function sendLeadEmail(leadEmail: LeadEmail) {
     nomeParceiro: leadEmail.nomeParceiro,
     corPrimaria: leadEmail.corPrimaria,
     urlLogo: leadEmail.urlLogo,
+    urlAnexarConta: leadEmail.urlAnexarConta,
   });
 
   let info = await transporter.sendMail({
     from: `${leadEmail.nomeParceiro} <seuemail@gmail.com>`,
     to: leadEmail.emailCliente,
     subject: "Solicitação de proposta de energia",
+    html: html,
+  });
+
+  console.log("Email enviado: " + info.response);
+}
+
+export interface LeadParceiroEmail {
+  emailParceiro: string;
+  nomePlataforma: string;
+  nomeParceiro: string;
+  corPrimaria: string;
+  urlLogo: string;
+}
+
+export async function sendLeadParceiroEmail(
+  leadParceiroEmail: LeadParceiroEmail
+) {
+  const html = await ejs.renderFile(
+    "./public/mailTemplate/leadParceiroTemplate.ejs",
+    {
+      nomePlataforma: leadParceiroEmail.nomePlataforma,
+      nomeParceiro: leadParceiroEmail.nomeParceiro,
+      corPrimaria: leadParceiroEmail.corPrimaria,
+      urlLogo: leadParceiroEmail.urlLogo,
+    }
+  );
+
+  let info = await transporter.sendMail({
+    from: `WeGen <seuemail@gmail.com>`,
+    to: leadParceiroEmail.emailParceiro,
+    subject: "Nova lead cadastrada",
     html: html,
   });
 

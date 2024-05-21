@@ -213,12 +213,7 @@ export default function Page({ params }: { params: { id: string } }) {
       bgUrl={`/parceiros/${config.IdParceiro}/Bg.png`}
     >
       <C.NavbarContainer primaryColor={config.CorPrimaria}>
-        <C.NavbarLogo
-          src={`/parceiros/${config.IdParceiro}/Logo.png`}
-          alt="logo"
-          width="200"
-          height="200"
-        />
+        <img src={`/parceiros/${config.IdParceiro}/Logo.png`} alt="logo" />
 
         <C.Wpp target="_blank">
           <Image src={wppImage} alt="wppImage" />
