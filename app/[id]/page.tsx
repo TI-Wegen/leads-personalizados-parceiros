@@ -103,8 +103,6 @@ export default function Page({ params }: { params: { id: string } }) {
 
       var data = await response.json();
 
-      console.log(data);
-
       setConfig(data);
 
       setLoading(false);
