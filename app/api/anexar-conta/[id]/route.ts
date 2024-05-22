@@ -14,11 +14,15 @@ export async function POST(
 
     var conta = data.get("conta") as File;
 
+    console.log("1 - Reconheceu conta");
+
     if (!conta) {
       throw new Error("Arquivo corrompido.");
     }
 
     var contaBuffer = new Uint8Array(await conta.arrayBuffer());
+
+    console.log("2 - Transformou conta em buffer");
 
     const client = new Client();
 
@@ -29,6 +33,8 @@ export async function POST(
       password: process.env.FTP_PWD,
     });
 
+    console.log("3 - Criou o client FTP");
+
     var timestamp = GeraTimeStamp();
 
     var fileName = `${timestamp}.${conta.name.split(".").pop()}`;
@@ -37,9 +43,15 @@ export async function POST(
 
     await fs.writeFile(dirPath, contaBuffer);
 
+    console.log("4 - Criou o arquivo local");
+
     await client.uploadFrom(dirPath, fileName);
 
+    console.log("5 - Enviou ao ftp");
+
     await fs.unlink(dirPath);
+
+    console.log("6 - Apagou do local");
 
     var body: AnexoLeadRequest = {
       idLead: params.id,
@@ -47,6 +59,8 @@ export async function POST(
     };
 
     await UpdateAnexoLead(body);
+
+    console.log("7 - Colocou url no banco de dados");
 
     return NextResponse.json("Anexado com sucesso.");
   } catch (error) {
