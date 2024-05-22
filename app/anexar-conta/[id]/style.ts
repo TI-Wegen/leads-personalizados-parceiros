@@ -34,11 +34,13 @@ export const Wpp = styled.a`
   display: flex;
   align-items: center;
   font-size: 24px !important;
+  text-decoration: none;
   cursor: pointer;
 
   &:hover {
     text-decoration: none;
     color: lightgray;
+    transform: scale(102%);
   }
 
   img {
