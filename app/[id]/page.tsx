@@ -6,6 +6,7 @@ import * as C from "./style";
 import {
   Button,
   CircularProgress,
+  InputAdornment,
   Stack,
   TextField,
   ThemeProvider,
@@ -22,6 +23,7 @@ export default function Page({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState<string>("");
   const [telefone, setTelefone] = useState<string>("");
+  const [telefoneSemMascara, setTelefoneSemMascara] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [valorConta, setValorConta] = useState<string>("");
   const [cellPhone, setCellphone] = useState({
@@ -87,9 +89,7 @@ export default function Page({ params }: { params: { id: string } }) {
       if (!existe) {
         router.push("/12");
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const getConfig = async () => {
@@ -166,7 +166,7 @@ export default function Page({ params }: { params: { id: string } }) {
       import("react-facebook-pixel")
         .then((x) => x.default)
         .then((ReactPixel) => {
-          ReactPixel.init(config.PixelFacebook!); // Substitua 'SUA_PIXEL_ID_AQUI' pelo seu ID de Pixel do Facebook
+          ReactPixel.init(config.PixelFacebook!);
           ReactPixel.pageView();
         });
     }
@@ -208,9 +208,9 @@ export default function Page({ params }: { params: { id: string } }) {
     const body = {
       idParceiro: params.id,
       nome: nome,
-      telefone: telefone,
+      telefone: telefoneSemMascara,
       email: email,
-      valorConta: valorConta,
+      valorConta: valorConta.replace(",", "."),
     };
 
     const response = await fetch("/api/create-lead", {
@@ -232,6 +232,39 @@ export default function Page({ params }: { params: { id: string } }) {
       await setInsideLoading(false);
     }
   }
+
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    // Limpar o valor, removendo todos os caracteres não numéricos
+    const cleanedValue = value.replace(/\D/g, "");
+
+    // Formatar o valor conforme necessário
+    let formattedValue = "";
+    if (cleanedValue.length <= 10) {
+      formattedValue = cleanedValue.replace(
+        /(\d{2})(\d{0,4})(\d{0,4})/,
+        "($1) $2-$3"
+      );
+    } else {
+      formattedValue = cleanedValue.replace(
+        /(\d{2})(\d{0,5})(\d{0,4})/,
+        "($1) $2-$3"
+      );
+    }
+
+    // Aqui você pode salvar o valor formatado e o valor limpo (sem máscara)
+    setTelefone(formattedValue);
+    setTelefoneSemMascara(cleanedValue); // Essa função você precisará definir no seu state
+  };
+
+  const handleValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const formattedValue = value
+      .replace(/\D/g, "")
+      .replace(/(\d)(\d{2})$/, "$1,$2");
+    setValorConta(formattedValue);
+  };
 
   return loading ? (
     <SkeletonLoad />
@@ -317,7 +350,11 @@ export default function Page({ params }: { params: { id: string } }) {
                       color="secondary"
                       required
                       value={telefone}
-                      onChange={(e) => setTelefone(e.target.value)}
+                      onChange={handlePhoneChange}
+                      inputProps={{
+                        maxLength: 15,
+                        minLength: 15,
+                      }}
                     />
                   </C.InputArea>
                 </Stack>
@@ -332,7 +369,16 @@ export default function Page({ params }: { params: { id: string } }) {
                     color="secondary"
                     required
                     value={valorConta}
-                    onChange={(e) => setValorConta(e.target.value)}
+                    onChange={handleValorChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">R$</InputAdornment>
+                      ),
+                    }}
+                    inputProps={{
+                      maxLength: 10,
+                      minLength: 3,
+                    }}
                   />
                 </C.InputArea>
 
