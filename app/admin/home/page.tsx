@@ -3,7 +3,7 @@
 import { ConfigResponse } from "@/app/lib/dbQueries";
 import * as C from "./style";
 import useAuth from "@/hooks/useAuth";
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ export default function Page() {
 
   const router = useRouter();
   const [rows, setRows] = useState<ConfigResponse[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const goToPage = (id: string) => {
     router.push(`/admin/lead-config/${id}`);
@@ -30,11 +31,11 @@ export default function Page() {
 
       var data = await response.json();
 
-      console.log(data);
-
       setRows(data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -75,20 +76,26 @@ export default function Page() {
           Novo
         </Button>
         <C.Card>
-          <DataGrid
-            sx={{
-              border: "none",
-            }}
-            rows={rows}
-            getRowId={(row) => row.Id}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-          />
+          {loading ? (
+            <C.LoadingWrapper>
+              <CircularProgress />
+            </C.LoadingWrapper>
+          ) : (
+            <DataGrid
+              sx={{
+                border: "none",
+              }}
+              rows={rows}
+              getRowId={(row) => row.Id}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              pageSizeOptions={[5, 10]}
+            />
+          )}
         </C.Card>
       </C.Wrapper>
     </C.Container>

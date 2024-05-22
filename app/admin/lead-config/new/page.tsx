@@ -1,15 +1,23 @@
 "use client";
 
-import { Autocomplete, Button, Checkbox, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Checkbox,
+  CircularProgress,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import * as C from "./style";
 import { useEffect, useState } from "react";
-import { ConfigRequest, ParceiroSelectResponse } from "@/app/lib/dbQueries";
+import { ParceiroSelectResponse } from "@/app/lib/dbQueries";
 import useAuth from "@/hooks/useAuth";
 import { MuiColorInput } from "mui-color-input";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { useRouter } from "next/navigation";
 import Notiflix from "notiflix";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function Page() {
   useAuth();
@@ -19,11 +27,13 @@ export default function Page() {
   const [idParceiro, setIdParceiro] = useState("");
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [telefoneSemMascara, setTelefoneSemMascara] = useState<string>("");
   const [corPrimaria, setCorPrimaria] = useState("#ffffff");
   const [corSecundaria, setCorSecundaria] = useState("#ffffff");
   const [texto, setTexto] = useState("");
   const [temPixelFacebook, setTemPixelFacebook] = useState(false);
   const [pixelFacebook, setPixelFacebook] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [logoUrl, setLogoUrl] = useState<string | null | undefined>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
@@ -60,6 +70,8 @@ export default function Page() {
           value: partner.idparceiro,
         }))
       );
+
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -85,6 +97,7 @@ export default function Page() {
       setSelectedLogo(event.target.files[0]);
     }
   };
+
   const handleBgChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       let reader = new FileReader();
@@ -95,6 +108,7 @@ export default function Page() {
       setSelectedBg(event.target.files[0]);
     }
   };
+
   const handleBgMobileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       let reader = new FileReader();
@@ -106,14 +120,18 @@ export default function Page() {
     }
   };
 
-  const createNewConfig = async () => {
+  const createNewConfig = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setLoading(true);
+
     var body = {
       IdParceiro: idParceiro,
       CorPrimaria: corPrimaria,
       CorSecundaria: corSecundaria,
       Nome: nome,
       Texto: texto,
-      Telefone: telefone,
+      Telefone: telefoneSemMascara,
       TemPixelFacebook: temPixelFacebook,
       PixelFacebook: pixelFacebook,
     };
@@ -143,182 +161,242 @@ export default function Page() {
 
       if (imagesResponse.ok) {
         Notiflix.Notify.success("Criado com sucesso!");
-        router.back();
+        router.push("/admin/home");
+        setLoading(false);
       } else {
         Notiflix.Notify.failure(
           "Houve um erro ao criar as imagens do parceiro."
         );
+        setLoading(false);
       }
     } else {
+      setLoading(false);
       Notiflix.Notify.failure("Houve um erro ao criar a config do parceiro.");
     }
   };
 
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    // Limpar o valor, removendo todos os caracteres não numéricos
+    const cleanedValue = value.replace(/\D/g, "");
+
+    // Formatar o valor conforme necessário
+    let formattedValue = "";
+    if (cleanedValue.length <= 10) {
+      formattedValue = cleanedValue.replace(
+        /(\d{2})(\d{0,4})(\d{0,4})/,
+        "($1) $2-$3"
+      );
+    } else {
+      formattedValue = cleanedValue.replace(
+        /(\d{2})(\d{0,5})(\d{0,4})/,
+        "($1) $2-$3"
+      );
+    }
+
+    // Aqui você pode salvar o valor formatado e o valor limpo (sem máscara)
+    setTelefone(formattedValue);
+    setTelefoneSemMascara(cleanedValue); // Essa função você precisará definir no seu state
+  };
   return (
     <C.Container>
-      <C.Wrapper>
+      <C.Wrapper onSubmit={createNewConfig}>
         <C.Card>
-          <h3>Criar nova configuração de lead</h3>
-          <C.FullWidthStack direction={"column"} spacing={2}>
-            <C.FullWidthStack direction={"row"} spacing={2}>
-              <Autocomplete
-                disablePortal
-                fullWidth
-                options={options}
-                onChange={(event, newValue) => {
-                  if (newValue) {
-                    console.log("Valor selecionado:", newValue.value);
-                    setIdParceiro(newValue.value);
-                  }
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Parceiro" />
-                )}
-              />
-            </C.FullWidthStack>
-            <C.FullWidthStack direction={"row"} spacing={2}>
-              <TextField
-                label="Nome"
-                fullWidth
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-              />
-              <TextField
-                label="Telefone"
-                fullWidth
-                value={telefone}
-                onChange={(e) => setTelefone(e.target.value)}
-              />
-            </C.FullWidthStack>
-            <C.FullWidthStack direction={"row"} spacing={2}>
-              <TextField
-                multiline
-                rows={4}
-                label="Texto"
-                fullWidth
-                value={texto}
-                onChange={(e) => setTexto(e.target.value)}
-              />
-              <C.TextWarning>
-                Ao colocar textos entre <span>* *</span> eles ficarão
-                destacados. <br />
-                Ex: Tenha desconto na sua <span>*energia*</span>!
-              </C.TextWarning>
-            </C.FullWidthStack>
-            <C.FullWidthStack direction={"row"} spacing={2}>
-              <C.CheckboxWrapper>
-                <Checkbox
-                  checked={temPixelFacebook}
-                  onChange={(e) => setTemPixelFacebook(e.target.checked)}
-                />
-                <label>Tem pixel do facebook?</label>
-              </C.CheckboxWrapper>
-              {temPixelFacebook && (
-                <TextField
-                  label="Pixel Facebook"
-                  fullWidth
-                  value={pixelFacebook}
-                  onChange={(e) => setPixelFacebook(e.target.value)}
-                />
-              )}
-            </C.FullWidthStack>
-            <C.FullWidthStack direction={"row"} spacing={2}>
-              <MuiColorInput
-                label="Cor Primária"
-                sx={{ width: "100%" }}
-                format="hex"
-                value={corPrimaria}
-                onChange={(e) => setCorPrimaria(e)}
-              />
-              <MuiColorInput
-                label="Cor Secundária"
-                sx={{ width: "100%" }}
-                format="hex"
-                value={corSecundaria}
-                onChange={(e) => setCorSecundaria(e)}
-              />
-            </C.FullWidthStack>
-            <h3>Imagens</h3>
-            <C.FullWidthStack direction={"row"} spacing={2}>
-              <C.ButtonDiv>
-                <Button
-                  component="label"
-                  sx={{ padding: "10px" }}
-                  role={undefined}
-                  variant="contained"
-                  fullWidth
-                  startIcon={<FileUploadIcon />}
-                >
-                  Upload Logo
-                  <C.VisuallyHiddenInput
-                    type="file"
-                    onChange={handleLogoChange}
-                  />
-                </Button>
-              </C.ButtonDiv>
-
-              <C.ImageDiv>
-                {logoUrl ? <img src={logoUrl} alt="Uploaded" /> : <AddIcon />}
-              </C.ImageDiv>
-            </C.FullWidthStack>
-            <C.FullWidthStack direction={"row"} spacing={2}>
-              <C.ButtonDiv>
-                <Button
-                  component="label"
-                  sx={{ padding: "10px" }}
-                  role={undefined}
-                  variant="contained"
-                  fullWidth
-                  startIcon={<FileUploadIcon />}
-                >
-                  Upload Background
-                  <C.VisuallyHiddenInput
-                    type="file"
-                    onChange={handleBgChange}
-                  />
-                </Button>
-              </C.ButtonDiv>
-
-              <C.ImageDiv>
-                {bgUrl ? <img src={bgUrl} alt="Uploaded" /> : <AddIcon />}
-              </C.ImageDiv>
-            </C.FullWidthStack>
-            <C.FullWidthStack direction={"row"} spacing={2}>
-              <C.ButtonDiv>
-                <Button
-                  component="label"
-                  sx={{ padding: "10px" }}
-                  role={undefined}
-                  variant="contained"
-                  fullWidth
-                  startIcon={<FileUploadIcon />}
-                >
-                  Upload Background Mobile
-                  <C.VisuallyHiddenInput
-                    type="file"
-                    onChange={handleBgMobileChange}
-                  />
-                </Button>
-              </C.ButtonDiv>
-
-              <C.ImageDiv>
-                {bgMobileUrl ? (
-                  <img src={bgMobileUrl} alt="Uploaded" />
-                ) : (
-                  <AddIcon />
-                )}
-              </C.ImageDiv>
-            </C.FullWidthStack>
-            <C.ButtonArea>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={() => createNewConfig()}
+          {loading ? (
+            <C.LoadingWrapper>
+              <CircularProgress />
+            </C.LoadingWrapper>
+          ) : (
+            <>
+              <C.FullWidthStack
+                direction={"row"}
+                spacing={2}
+                alignItems={"center"}
               >
-                Criar
-              </Button>
-            </C.ButtonArea>
-          </C.FullWidthStack>
+                <IconButton color="primary" onClick={() => router.back()}>
+                  <ArrowBackIcon />
+                </IconButton>
+                <h3>Criar nova configuração de lead</h3>
+              </C.FullWidthStack>
+              <C.FullWidthStack direction={"column"} spacing={2}>
+                <C.FullWidthStack direction={"row"} spacing={2}>
+                  <Autocomplete
+                    disablePortal
+                    fullWidth
+                    aria-required
+                    options={options}
+                    onChange={(event, newValue) => {
+                      if (newValue) {
+                        console.log("Valor selecionado:", newValue.value);
+                        setIdParceiro(newValue.value);
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Parceiro" />
+                    )}
+                  />
+                </C.FullWidthStack>
+                <C.FullWidthStack direction={"row"} spacing={2}>
+                  <TextField
+                    label="Nome"
+                    required
+                    fullWidth
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                  />
+                  <TextField
+                    label="Telefone"
+                    required
+                    fullWidth
+                    value={telefone}
+                    onChange={handlePhoneChange}
+                    inputProps={{
+                      maxLength: 15,
+                      minLength: 15,
+                    }}
+                  />
+                </C.FullWidthStack>
+                <C.FullWidthStack direction={"row"} spacing={2}>
+                  <TextField
+                    multiline
+                    required
+                    rows={4}
+                    label="Texto"
+                    fullWidth
+                    value={texto}
+                    onChange={(e) => setTexto(e.target.value)}
+                  />
+                  <C.TextWarning>
+                    Ao colocar textos entre <span>* *</span> eles ficarão
+                    destacados. <br />
+                    Ex: Tenha desconto na sua <span>*energia*</span>!
+                  </C.TextWarning>
+                </C.FullWidthStack>
+                <C.FullWidthStack direction={"row"} spacing={2}>
+                  <C.CheckboxWrapper>
+                    <Checkbox
+                      checked={temPixelFacebook}
+                      onChange={(e) => setTemPixelFacebook(e.target.checked)}
+                    />
+                    <label>Tem pixel do facebook?</label>
+                  </C.CheckboxWrapper>
+                  {temPixelFacebook && (
+                    <TextField
+                      label="Pixel Facebook"
+                      required={temPixelFacebook}
+                      fullWidth
+                      value={pixelFacebook}
+                      onChange={(e) => setPixelFacebook(e.target.value)}
+                    />
+                  )}
+                </C.FullWidthStack>
+                <C.FullWidthStack direction={"row"} spacing={2}>
+                  <MuiColorInput
+                    label="Cor Primária"
+                    required
+                    sx={{ width: "100%" }}
+                    format="hex"
+                    value={corPrimaria}
+                    onChange={(e) => setCorPrimaria(e)}
+                  />
+                  <MuiColorInput
+                    label="Cor Secundária"
+                    required
+                    sx={{ width: "100%" }}
+                    format="hex"
+                    value={corSecundaria}
+                    onChange={(e) => setCorSecundaria(e)}
+                  />
+                </C.FullWidthStack>
+                <h3>Imagens</h3>
+                <C.FullWidthStack direction={"row"} spacing={2}>
+                  <C.ButtonDiv>
+                    <Button
+                      component="label"
+                      sx={{ padding: "10px" }}
+                      role={undefined}
+                      variant="contained"
+                      fullWidth
+                      startIcon={<FileUploadIcon />}
+                    >
+                      Upload Logo
+                      <C.VisuallyHiddenInput
+                        type="file"
+                        onChange={handleLogoChange}
+                      />
+                    </Button>
+                  </C.ButtonDiv>
+
+                  <C.ImageDiv>
+                    {logoUrl ? (
+                      <img src={logoUrl} alt="Uploaded" />
+                    ) : (
+                      <AddIcon />
+                    )}
+                  </C.ImageDiv>
+                </C.FullWidthStack>
+                <C.FullWidthStack direction={"row"} spacing={2}>
+                  <C.ButtonDiv>
+                    <Button
+                      component="label"
+                      sx={{ padding: "10px" }}
+                      role={undefined}
+                      variant="contained"
+                      fullWidth
+                      startIcon={<FileUploadIcon />}
+                    >
+                      Upload Background
+                      <C.VisuallyHiddenInput
+                        type="file"
+                        onChange={handleBgChange}
+                      />
+                    </Button>
+                  </C.ButtonDiv>
+
+                  <C.ImageDiv>
+                    {bgUrl ? <img src={bgUrl} alt="Uploaded" /> : <AddIcon />}
+                  </C.ImageDiv>
+                </C.FullWidthStack>
+                <C.FullWidthStack direction={"row"} spacing={2}>
+                  <C.ButtonDiv>
+                    <Button
+                      component="label"
+                      sx={{ padding: "10px" }}
+                      role={undefined}
+                      variant="contained"
+                      fullWidth
+                      startIcon={<FileUploadIcon />}
+                    >
+                      Upload Background Mobile
+                      <C.VisuallyHiddenInput
+                        type="file"
+                        onChange={handleBgMobileChange}
+                      />
+                    </Button>
+                  </C.ButtonDiv>
+
+                  <C.ImageDiv>
+                    {bgMobileUrl ? (
+                      <img src={bgMobileUrl} alt="Uploaded" />
+                    ) : (
+                      <AddIcon />
+                    )}
+                  </C.ImageDiv>
+                </C.FullWidthStack>
+                <C.ButtonArea>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    // onClick={() => createNewConfig()}
+                    type="submit"
+                  >
+                    Criar
+                  </Button>
+                </C.ButtonArea>
+              </C.FullWidthStack>
+            </>
+          )}
         </C.Card>
       </C.Wrapper>
     </C.Container>

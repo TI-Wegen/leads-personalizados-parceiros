@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { TextField } from "@mui/material";
 
 export const Container = styled.div`
   width: 100%;
@@ -26,4 +25,11 @@ export const Card = styled.div`
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 10px 10px 23px -3px rgba(0, 0, 0, 0.56);
+`;
+
+export const LoadingWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
 `;

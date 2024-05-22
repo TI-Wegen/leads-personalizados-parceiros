@@ -14,13 +14,15 @@ export const Container = styled.div`
   }
 `;
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.form`
   display: flex;
   gap: 20px;
   width: 80%;
   height: 100%;
   flex-direction: column;
   padding: 30px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const Content = styled.div`
@@ -41,10 +43,18 @@ export const Card = styled.div`
   border-radius: 5px;
   box-shadow: 10px 10px 23px -3px rgba(0, 0, 0, 0.56);
   gap: 30px;
-  overflow-y: scroll;
+  overflow-y: auto;
   h3 {
     margin: 0;
   }
+`;
+
+export const LoadingWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
 `;
 
 export const FullWidthStack = styled(Stack)`
