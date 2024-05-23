@@ -19,6 +19,7 @@ import SkeletonLoad from "@/components/Skeleton";
 import { useRouter } from "next/navigation";
 
 export default function Page({ params }: { params: { id: string } }) {
+  const [leadCriado, setLeadCriado] = useState(false);
   const [insideLoading, setInsideLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState<string>("");
@@ -225,6 +226,7 @@ export default function Page({ params }: { params: { id: string } }) {
       await clearFields();
       await trackLead();
       await setInsideLoading(false);
+      await setLeadCriado(true);
     } else {
       Notiflix.Notify.failure("Houve um erro ao criar seu contato.");
       await setInsideLoading(false);
@@ -296,107 +298,128 @@ export default function Page({ params }: { params: { id: string } }) {
             primaryColor={config.CorPrimaria}
             onSubmit={handleSubmit}
           >
-            <C.TitleArea>
-              <C.Title>
-                <C.MarkedText secondaryColor={config.CorSecundaria}>
-                  CADASTRE-SE{" "}
-                </C.MarkedText>
-                PARA GARANTIR MAIS ECONOMIA NA{" "}
-                <C.MarkedText secondaryColor={config.CorSecundaria}>
-                  SUA CONTA DE LUZ{" "}
-                </C.MarkedText>
-              </C.Title>
-              <C.Subtitle>APROVEITE, ECONOMIZAR É GRÁTIS!</C.Subtitle>
-            </C.TitleArea>
-            <ThemeProvider theme={theme}>
-              <Stack direction="column" spacing={2}>
-                <C.InputArea>
-                  <label>Nome</label>
-                  <TextField
-                    id="nome"
-                    name="nome"
-                    placeholder="Nome"
-                    variant="outlined"
-                    fullWidth
-                    color="secondary"
-                    required
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                  />
-                </C.InputArea>
-                <Stack spacing={2} direction="row">
-                  <C.InputArea>
-                    <label>Email</label>
-                    <TextField
-                      id="email"
-                      name="email"
-                      placeholder="Email"
-                      variant="outlined"
-                      fullWidth
-                      color="secondary"
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </C.InputArea>
-                  <C.InputArea>
-                    <label>Telefone</label>
-                    <TextField
-                      id="telefone"
-                      name="telefone"
-                      placeholder="Telefone"
-                      variant="outlined"
-                      fullWidth
-                      color="secondary"
-                      required
-                      value={telefone}
-                      onChange={handlePhoneChange}
-                      inputProps={{
-                        maxLength: 15,
-                        minLength: 15,
-                      }}
-                    />
-                  </C.InputArea>
-                </Stack>
-                <C.InputArea>
-                  <label>Valor médio da conta</label>
-                  <TextField
-                    id="valor"
-                    name="valor"
-                    placeholder="Valor médio da conta"
-                    variant="outlined"
-                    fullWidth
-                    color="secondary"
-                    required
-                    value={valorConta}
-                    onChange={handleValorChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">R$</InputAdornment>
-                      ),
-                    }}
-                    inputProps={{
-                      maxLength: 10,
-                      minLength: 3,
-                    }}
-                  />
-                </C.InputArea>
+            {leadCriado ? (
+              <>
+                <C.TitleArea>
+                  <C.Title>
+                    <C.MarkedText secondaryColor={config.CorSecundaria}>
+                      OBRIGADO POR SE CADASTRAR!
+                    </C.MarkedText>
+                  </C.Title>
+                  <C.Subtitle>
+                    VOCÊ ESTÁ A UM PASSO DE RECEBER ATÉ 25% DE DESCONTO NA SUA
+                    CONTA DE LUZ, EM BREVE TE RETORNAREMOS,{" "}
+                    <C.MarkedText secondaryColor={config.CorSecundaria}>
+                      FAVOR VERIFICAR SEU EMAIL.
+                    </C.MarkedText>
+                  </C.Subtitle>
+                </C.TitleArea>
+              </>
+            ) : (
+              <>
+                <C.TitleArea>
+                  <C.Title>
+                    <C.MarkedText secondaryColor={config.CorSecundaria}>
+                      CADASTRE-SE{" "}
+                    </C.MarkedText>
+                    PARA GARANTIR MAIS ECONOMIA NA{" "}
+                    <C.MarkedText secondaryColor={config.CorSecundaria}>
+                      SUA CONTA DE LUZ{" "}
+                    </C.MarkedText>
+                  </C.Title>
+                  <C.Subtitle>APROVEITE, ECONOMIZAR É GRÁTIS!</C.Subtitle>
+                </C.TitleArea>
+                <ThemeProvider theme={theme}>
+                  <Stack direction="column" spacing={2}>
+                    <C.InputArea>
+                      <label>Nome</label>
+                      <TextField
+                        id="nome"
+                        name="nome"
+                        placeholder="Nome"
+                        variant="outlined"
+                        fullWidth
+                        color="secondary"
+                        required
+                        value={nome}
+                        onChange={(e) => setNome(e.target.value)}
+                      />
+                    </C.InputArea>
+                    <Stack spacing={2} direction="row">
+                      <C.InputArea>
+                        <label>Email</label>
+                        <TextField
+                          id="email"
+                          name="email"
+                          placeholder="Email"
+                          variant="outlined"
+                          fullWidth
+                          color="secondary"
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                      </C.InputArea>
+                      <C.InputArea>
+                        <label>Telefone</label>
+                        <TextField
+                          id="telefone"
+                          name="telefone"
+                          placeholder="Telefone"
+                          variant="outlined"
+                          fullWidth
+                          color="secondary"
+                          required
+                          value={telefone}
+                          onChange={handlePhoneChange}
+                          inputProps={{
+                            maxLength: 15,
+                            minLength: 15,
+                          }}
+                        />
+                      </C.InputArea>
+                    </Stack>
+                    <C.InputArea>
+                      <label>Valor médio da conta</label>
+                      <TextField
+                        id="valor"
+                        name="valor"
+                        placeholder="Valor médio da conta"
+                        variant="outlined"
+                        fullWidth
+                        color="secondary"
+                        required
+                        value={valorConta}
+                        onChange={handleValorChange}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">R$</InputAdornment>
+                          ),
+                        }}
+                        inputProps={{
+                          maxLength: 10,
+                          minLength: 3,
+                        }}
+                      />
+                    </C.InputArea>
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  color="secondary"
-                  type="submit"
-                >
-                  {insideLoading ? (
-                    <CircularProgress color="primary" size={22} />
-                  ) : (
-                    "Solicitar Proposta"
-                  )}
-                </Button>
-              </Stack>
-            </ThemeProvider>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      color="secondary"
+                      type="submit"
+                    >
+                      {insideLoading ? (
+                        <CircularProgress color="primary" size={22} />
+                      ) : (
+                        "Solicitar Proposta"
+                      )}
+                    </Button>
+                  </Stack>
+                </ThemeProvider>
+              </>
+            )}
           </C.FormContato>
         </C.ContentRight>
       </C.Content>
