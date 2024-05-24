@@ -92,7 +92,7 @@ export async function POST(req: Request) {
       idBackoffice: idBackoffice,
       tipoLead: "Comercial",
       idCampanha: parceiroResponse.idCampanha,
-      nomeCampanha: campanhaResponse.nomeCampanha,
+      nomeCampanha: "economia.wegen.com.br",
       interesse: "C /",
       statusCupom: "Solicitado",
       idCorretorCampanha: "0",
