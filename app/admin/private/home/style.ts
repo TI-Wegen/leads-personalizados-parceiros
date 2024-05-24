@@ -16,8 +16,12 @@ export const Wrapper = styled.div`
   display: flex;
   gap: 20px;
   width: 60%;
-  align-items: flex-end;
   flex-direction: column;
+`;
+
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 export const Card = styled.div`

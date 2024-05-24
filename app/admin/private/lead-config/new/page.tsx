@@ -13,17 +13,17 @@ import { useEffect, useState } from "react";
 import { ParceiroSelectResponse } from "@/app/lib/dbQueries";
 import useAuth from "@/hooks/useAuth";
 import { MuiColorInput } from "mui-color-input";
+import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { useRouter } from "next/navigation";
 import Notiflix from "notiflix";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page() {
   useAuth();
 
   const router = useRouter();
 
-  const [loading, setLoading] = useState(true);
   const [idParceiro, setIdParceiro] = useState("");
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -33,6 +33,7 @@ export default function Page({ params }: { params: { id: string } }) {
   const [texto, setTexto] = useState("");
   const [temPixelFacebook, setTemPixelFacebook] = useState(false);
   const [pixelFacebook, setPixelFacebook] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [logoUrl, setLogoUrl] = useState<string | null | undefined>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
@@ -69,34 +70,10 @@ export default function Page({ params }: { params: { id: string } }) {
           value: partner.idparceiro,
         }))
       );
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getData = async () => {
-    const response = await fetch(`/api/config/get/${params.id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.ok) {
-      var data = await response.json();
-
-      console.log(data);
-
-      setIdParceiro(data.IdParceiro);
-      setNome(data.Nome);
-      setTelefone(data.Telefone);
-      setCorPrimaria(data.CorPrimaria);
-      setCorSecundaria(data.CorSecundaria);
-      setTexto(data.Texto);
-      setTemPixelFacebook(data.TemPixelFacebook);
-      setPixelFacebook(data.PixelFacebook);
 
       setLoading(false);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -107,13 +84,8 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [temPixelFacebook]);
 
   useEffect(() => {
-    getData();
     getOptions();
   }, []);
-
-  useEffect(() => {
-    loadFoneMask(telefone);
-  }, [telefone]);
 
   const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -148,7 +120,7 @@ export default function Page({ params }: { params: { id: string } }) {
     }
   };
 
-  const editConfig = async (event: React.FormEvent<HTMLFormElement>) => {
+  const createNewConfig = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setLoading(true);
@@ -165,7 +137,7 @@ export default function Page({ params }: { params: { id: string } }) {
     };
 
     const response = await fetch("/api/config", {
-      method: "PUT",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -182,14 +154,14 @@ export default function Page({ params }: { params: { id: string } }) {
       const imagesResponse = await fetch(
         `/api/config/save-images/${body.IdParceiro}`,
         {
-          method: "PUT",
+          method: "POST",
           body: formData,
         }
       );
 
       if (imagesResponse.ok) {
-        Notiflix.Notify.success("Editado com sucesso!");
-        router.back();
+        Notiflix.Notify.success("Criado com sucesso!");
+        router.push("/admin/private/home");
         setLoading(false);
       } else {
         Notiflix.Notify.failure(
@@ -198,8 +170,8 @@ export default function Page({ params }: { params: { id: string } }) {
         setLoading(false);
       }
     } else {
-      Notiflix.Notify.failure("Houve um erro ao criar a config do parceiro.");
       setLoading(false);
+      Notiflix.Notify.failure("Houve um erro ao criar a config do parceiro.");
     }
   };
 
@@ -227,37 +199,9 @@ export default function Page({ params }: { params: { id: string } }) {
     setTelefone(formattedValue);
     setTelefoneSemMascara(cleanedValue); // Essa função você precisará definir no seu state
   };
-
-  const loadFoneMask = async (tel: string) => {
-    console.log("AQUI");
-    console.log(tel);
-
-    if (tel != undefined) {
-      // Limpar o valor, removendo todos os caracteres não numéricos
-      const cleanedValue = tel.replace(/\D/g, "");
-
-      // Formatar o valor conforme necessário
-      let formattedValue = "";
-      if (cleanedValue.length <= 10) {
-        formattedValue = cleanedValue.replace(
-          /(\d{2})(\d{0,4})(\d{0,4})/,
-          "($1) $2-$3"
-        );
-      } else {
-        formattedValue = cleanedValue.replace(
-          /(\d{2})(\d{0,5})(\d{0,4})/,
-          "($1) $2-$3"
-        );
-      }
-
-      // Aqui você pode salvar o valor formatado e o valor limpo (sem máscara)
-      setTelefone(formattedValue);
-      setTelefoneSemMascara(cleanedValue); // Essa função você precisará definir no seu state
-    }
-  };
   return (
     <C.Container>
-      <C.Wrapper onSubmit={editConfig}>
+      <C.Wrapper onSubmit={createNewConfig}>
         <C.Card>
           {loading ? (
             <C.LoadingWrapper>
@@ -273,19 +217,14 @@ export default function Page({ params }: { params: { id: string } }) {
                 <IconButton color="primary" onClick={() => router.back()}>
                   <ArrowBackIcon />
                 </IconButton>
-                <h3>Editar configuração de lead</h3>
+                <h3>Criar nova configuração de lead</h3>
               </C.FullWidthStack>
               <C.FullWidthStack direction={"column"} spacing={2}>
                 <C.FullWidthStack direction={"row"} spacing={2}>
                   <Autocomplete
-                    readOnly
                     disablePortal
                     fullWidth
-                    value={
-                      idParceiro
-                        ? options.find((x) => x.value == idParceiro)
-                        : null
-                    }
+                    aria-required
                     options={options}
                     onChange={(event, newValue) => {
                       if (newValue) {
@@ -301,12 +240,14 @@ export default function Page({ params }: { params: { id: string } }) {
                 <C.FullWidthStack direction={"row"} spacing={2}>
                   <TextField
                     label="Nome"
+                    required
                     fullWidth
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                   />
                   <TextField
                     label="Telefone"
+                    required
                     fullWidth
                     value={telefone}
                     onChange={handlePhoneChange}
@@ -319,6 +260,7 @@ export default function Page({ params }: { params: { id: string } }) {
                 <C.FullWidthStack direction={"row"} spacing={2}>
                   <TextField
                     multiline
+                    required
                     rows={4}
                     label="Texto"
                     fullWidth
@@ -339,18 +281,20 @@ export default function Page({ params }: { params: { id: string } }) {
                     />
                     <label>Tem pixel do facebook?</label>
                   </C.CheckboxWrapper>
-                  {temPixelFacebook ? (
+                  {temPixelFacebook && (
                     <TextField
                       label="Pixel Facebook"
+                      required={temPixelFacebook}
                       fullWidth
                       value={pixelFacebook}
                       onChange={(e) => setPixelFacebook(e.target.value)}
                     />
-                  ) : null}
+                  )}
                 </C.FullWidthStack>
                 <C.FullWidthStack direction={"row"} spacing={2}>
                   <MuiColorInput
                     label="Cor Primária"
+                    required
                     sx={{ width: "100%" }}
                     format="hex"
                     value={corPrimaria}
@@ -358,6 +302,7 @@ export default function Page({ params }: { params: { id: string } }) {
                   />
                   <MuiColorInput
                     label="Cor Secundária"
+                    required
                     sx={{ width: "100%" }}
                     format="hex"
                     value={corSecundaria}
@@ -387,7 +332,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     {logoUrl ? (
                       <img src={logoUrl} alt="Uploaded" />
                     ) : (
-                      <img src={`/parceiros/${idParceiro}/Logo.png`} />
+                      <AddIcon />
                     )}
                   </C.ImageDiv>
                 </C.FullWidthStack>
@@ -410,11 +355,7 @@ export default function Page({ params }: { params: { id: string } }) {
                   </C.ButtonDiv>
 
                   <C.ImageDiv>
-                    {bgUrl ? (
-                      <img src={bgUrl} alt="Uploaded" />
-                    ) : (
-                      <img src={`/parceiros/${idParceiro}/Bg.png`} alt="img" />
-                    )}
+                    {bgUrl ? <img src={bgUrl} alt="Uploaded" /> : <AddIcon />}
                   </C.ImageDiv>
                 </C.FullWidthStack>
                 <C.FullWidthStack direction={"row"} spacing={2}>
@@ -439,16 +380,18 @@ export default function Page({ params }: { params: { id: string } }) {
                     {bgMobileUrl ? (
                       <img src={bgMobileUrl} alt="Uploaded" />
                     ) : (
-                      <img
-                        src={`/parceiros/${idParceiro}/BgMobile.png`}
-                        alt="img"
-                      />
+                      <AddIcon />
                     )}
                   </C.ImageDiv>
                 </C.FullWidthStack>
                 <C.ButtonArea>
-                  <Button variant="contained" color="success" type="submit">
-                    Salvar
+                  <Button
+                    variant="contained"
+                    color="success"
+                    // onClick={() => createNewConfig()}
+                    type="submit"
+                  >
+                    Criar
                   </Button>
                 </C.ButtonArea>
               </C.FullWidthStack>

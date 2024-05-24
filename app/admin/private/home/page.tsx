@@ -3,11 +3,13 @@
 import { ConfigResponse } from "@/app/lib/dbQueries";
 import * as C from "./style";
 import useAuth from "@/hooks/useAuth";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
+import { signOut } from "next-auth/react";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export default function Page() {
   useAuth();
@@ -17,7 +19,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   const goToPage = (id: string) => {
-    router.push(`/admin/lead-config/${id}`);
+    router.push(`/admin/private/lead-config/${id}`);
   };
 
   const getConfigs = async () => {
@@ -67,14 +69,19 @@ export default function Page() {
   return (
     <C.Container>
       <C.Wrapper>
-        <Button
-          variant="contained"
-          color="info"
-          startIcon={<AddIcon />}
-          onClick={() => router.push(`/admin/lead-config/new`)}
-        >
-          Novo
-        </Button>
+        <C.Header>
+          <IconButton onClick={() => signOut()}>
+            <LogoutIcon />
+          </IconButton>
+          <Button
+            variant="contained"
+            color="info"
+            startIcon={<AddIcon />}
+            onClick={() => router.push(`/admin/private/lead-config/new`)}
+          >
+            Novo
+          </Button>
+        </C.Header>
         <C.Card>
           {loading ? (
             <C.LoadingWrapper>

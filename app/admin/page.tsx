@@ -5,6 +5,7 @@ import * as C from "./style";
 import { useState } from "react";
 import Notiflix from "notiflix";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -16,24 +17,19 @@ export default function Page() {
     event.preventDefault();
     await setLoading(true);
 
-    if (
-      username === process.env.NEXT_PUBLIC_ADMIN_USER &&
-      password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
-    ) {
-      var token = Date.now().toString() + "*" + "logged";
+    const res = await signIn("credentials", {
+      redirect: false,
+      username,
+      password,
+    });
 
-      localStorage.setItem("token", token);
-
-      router.push("/admin/home");
-
-      Notiflix.Notify.success("Login bem-sucedido!");
-
-      setLoading(false);
-    } else {
+    if (res?.error) {
       Notiflix.Notify.failure("Usuário ou senha incorretos");
-
-      setLoading(false);
+    } else {
+      router.push("/admin/private/home");
+      Notiflix.Notify.success("Login bem-sucedido!");
     }
+    setLoading(false);
   };
 
   return (

@@ -1,13 +1,23 @@
+import authOptions from "@/app/lib/authOptions";
 import {
   ConfigRequest,
   CreateConfig,
   GetAllConfigsResponse,
   UpdateConfig,
 } from "@/app/lib/dbQueries";
+import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return new NextResponse("Unauthorized", {
+        status: 401,
+      });
+    }
+
     var response = await GetAllConfigsResponse();
 
     return NextResponse.json(response);
@@ -19,6 +29,14 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return new NextResponse("Unauthorized", {
+      status: 401,
+    });
+  }
+
   const data = await req.json();
 
   try {

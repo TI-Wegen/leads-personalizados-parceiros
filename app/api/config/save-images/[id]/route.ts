@@ -2,12 +2,22 @@ import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 import { GetConfigIdByParceiroId } from "@/app/lib/dbQueries";
+import { getServerSession } from "next-auth/next";
+import authOptions from "@/app/lib/authOptions";
 
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return new NextResponse("Unauthorized", {
+        status: 401,
+      });
+    }
+
     var existConfig = await GetConfigIdByParceiroId(params.id);
 
     if (!existConfig) {
@@ -68,6 +78,14 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return new NextResponse("Unauthorized", {
+        status: 401,
+      });
+    }
+
     const data = await req.formData();
 
     var logo = data.get("logo") as File;
