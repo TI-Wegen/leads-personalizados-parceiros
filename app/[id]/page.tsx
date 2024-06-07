@@ -212,12 +212,15 @@ export default function Page({ params }: { params: { id: string } }) {
       valorConta: valorConta.replace(",", "."),
     };
 
+    const jsonBody = JSON.stringify(body);
+
+    const formData = new FormData();
+
+    await formData.append("body", jsonBody!);
+
     const response = await fetch("/api/create-lead", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+      body: formData,
     });
 
     if (response.ok) {

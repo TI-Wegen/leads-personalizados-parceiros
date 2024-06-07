@@ -10,6 +10,7 @@ import {
   GetParceiroResponse,
   VerifyIsBackoffice,
 } from "@/app/lib/dbQueries";
+import { SendBillToServer } from "@/app/lib/fileSender";
 import {
   LeadEmail,
   LeadParceiroEmail,
@@ -27,11 +28,20 @@ interface BodyRequest {
 }
 
 export async function POST(req: Request) {
-  const data = await req.json();
-
-  var idParceiro = data.idParceiro;
+  const dataFormData = await req.formData();
 
   try {
+    var file = dataFormData.get("file") as File;
+    var body = dataFormData.get("body");
+
+    if (body == null) {
+      throw "Body não encontrado.";
+    }
+
+    var jsonBody = JSON.parse(body as string);
+
+    var idParceiro = jsonBody.idParceiro;
+
     var parceiroResponse = await GetParceiroResponse(idParceiro);
 
     var campanhaResponse: CampanhaResponse = {
@@ -78,10 +88,10 @@ export async function POST(req: Request) {
     var datas = GetDatas();
 
     var createNewLeadRequest: CreateNewLeadRequest = {
-      nomeCompleto: data.nome,
-      telefone: data.telefone,
-      email: data.email,
-      valorConta: data.valorConta,
+      nomeCompleto: jsonBody.nome,
+      telefone: jsonBody.telefone,
+      email: jsonBody.email,
+      valorConta: jsonBody.valorConta,
       statusLead: "Lead",
       data: datas.data,
       hora: datas.horas,
@@ -115,17 +125,21 @@ export async function POST(req: Request) {
       throw "Id não encontrado.";
     }
 
-    var leadEmail: LeadEmail = {
-      nomeCliente: data.nome,
-      emailCliente: data.email,
-      nomeParceiro: config.Nome,
-      corPrimaria: config.CorPrimaria,
-      nomePlataforma: "WeGen",
-      urlLogo: `${process.env.SITE_URL}/parceiros/${idParceiro}/Logo.png`,
-      urlAnexarConta: `${process.env.SITE_URL}/anexar-conta/${leadId}`,
-    };
+    if (!file) {
+      var leadEmail: LeadEmail = {
+        nomeCliente: jsonBody.nome,
+        emailCliente: jsonBody.email,
+        nomeParceiro: jsonBody.Nome,
+        corPrimaria: config.CorPrimaria,
+        nomePlataforma: "WeGen",
+        urlLogo: `${process.env.SITE_URL}/parceiros/${idParceiro}/Logo.png`,
+        urlAnexarConta: `${process.env.SITE_URL}/anexar-conta/${leadId}`,
+      };
 
-    await sendLeadEmail(leadEmail);
+      await sendLeadEmail(leadEmail);
+    } else {
+      await SendBillToServer(leadId, file);
+    }
 
     var leadParceiroEmail: LeadParceiroEmail = {
       corPrimaria: config.CorPrimaria,
@@ -141,7 +155,6 @@ export async function POST(req: Request) {
       message: createLeadResult,
     });
   } catch (error) {
-    console.log(error);
     return new NextResponse("Não foi possível criar seu contato.", {
       status: 500,
     });
