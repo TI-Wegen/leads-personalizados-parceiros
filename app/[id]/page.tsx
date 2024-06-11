@@ -353,7 +353,7 @@ export default function Page({ params }: { params: { id: string } }) {
                   <Stack direction="column" spacing={2}>
                     <C.InputArea>
                       <label>Nome</label>
-                      <TextField
+                      <C.StyledTextField
                         id="nome"
                         name="nome"
                         placeholder="Nome"
@@ -368,7 +368,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <Stack spacing={2} direction="row">
                       <C.InputArea>
                         <label>Email</label>
-                        <TextField
+                        <C.StyledTextField
                           id="email"
                           name="email"
                           placeholder="Email"
@@ -383,7 +383,7 @@ export default function Page({ params }: { params: { id: string } }) {
                       </C.InputArea>
                       <C.InputArea>
                         <label>Telefone</label>
-                        <TextField
+                        <C.StyledTextField
                           id="telefone"
                           name="telefone"
                           placeholder="Telefone"
@@ -402,7 +402,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     </Stack>
                     <C.InputArea>
                       <label>Valor médio da conta</label>
-                      <TextField
+                      <C.StyledTextField
                         id="valor"
                         name="valor"
                         placeholder="Valor médio da conta"

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import Image from "next/image";
 
 export const Container = styled.div<{ secondaryColor: string; bgUrl?: string }>`
@@ -188,6 +188,12 @@ export const InputArea = styled.div`
 
   label {
     color: white;
+  }
+`;
+
+export const StyledTextField = styled(TextField)`
+  input {
+    height: 10px;
   }
 `;
 
