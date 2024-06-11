@@ -132,7 +132,9 @@ export async function POST(req: Request) {
         nomeParceiro: jsonBody.Nome,
         corPrimaria: config!.CorPrimaria,
         nomePlataforma: "WeGen",
-        urlLogo: `${process.env.SITE_URL}/parceiros/${idParceiro}/Logo.png`,
+        urlLogo: `${process.env.SITE_URL}/parceiros/${
+          config!.IdParceiro
+        }/Logo.png`,
         urlAnexarConta: `${process.env.SITE_URL}/anexar-conta/${leadId}`,
       };
 
@@ -146,7 +148,9 @@ export async function POST(req: Request) {
       emailParceiro: parceiroResponse.email,
       nomeParceiro: parceiroResponse.descParceiro,
       nomePlataforma: "WeGen",
-      urlLogo: `${process.env.SITE_URL}/parceiros/${idParceiro}/Logo.png`,
+      urlLogo: `${process.env.SITE_URL}/parceiros/${
+        config!.IdParceiro
+      }/Logo.png`,
     };
 
     await sendLeadParceiroEmail(leadParceiroEmail);
