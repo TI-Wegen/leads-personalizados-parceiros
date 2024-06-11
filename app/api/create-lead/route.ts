@@ -111,7 +111,7 @@ export async function POST(req: Request) {
     var config = await GetConfigResponse(idParceiro);
 
     if (config == null) {
-      throw "Config não encontrada.";
+      config = await GetConfigResponse("12");
     }
 
     var createLeadResult = await CreateNewLead(createNewLeadRequest);
@@ -130,7 +130,7 @@ export async function POST(req: Request) {
         nomeCliente: jsonBody.nome,
         emailCliente: jsonBody.email,
         nomeParceiro: jsonBody.Nome,
-        corPrimaria: config.CorPrimaria,
+        corPrimaria: config!.CorPrimaria,
         nomePlataforma: "WeGen",
         urlLogo: `${process.env.SITE_URL}/parceiros/${idParceiro}/Logo.png`,
         urlAnexarConta: `${process.env.SITE_URL}/anexar-conta/${leadId}`,
@@ -142,7 +142,7 @@ export async function POST(req: Request) {
     }
 
     var leadParceiroEmail: LeadParceiroEmail = {
-      corPrimaria: config.CorPrimaria,
+      corPrimaria: config!.CorPrimaria,
       emailParceiro: parceiroResponse.email,
       nomeParceiro: parceiroResponse.descParceiro,
       nomePlataforma: "WeGen",
