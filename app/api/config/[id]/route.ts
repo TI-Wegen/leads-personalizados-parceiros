@@ -1,4 +1,8 @@
-import { GetConfigResponse, GetParceiroNomeById } from "@/app/lib/dbQueries";
+import {
+  CanUploadBill,
+  GetConfigResponse,
+  GetParceiroNomeById,
+} from "@/app/lib/dbQueries";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -17,7 +21,18 @@ export async function GET(
       }
     }
 
-    return NextResponse.json(response);
+    var anexoSimulador = await CanUploadBill(params.id);
+
+    if (anexoSimulador == null) {
+      throw "Houve um erro ao verificar a possibilidade de enviar conta";
+    }
+
+    var fullResponse = {
+      ...response,
+      anexoSimulador: anexoSimulador,
+    };
+
+    return NextResponse.json(fullResponse);
   } catch (error) {
     return new NextResponse("Houve um erro durante sua requisição.", {
       status: 500,

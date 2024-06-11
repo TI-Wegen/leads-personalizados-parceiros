@@ -370,12 +370,12 @@ export async function GetParceiroNomeById(
   idParceiro: string
 ): Promise<string | null> {
   try {
-    const sql = `SELECT t.descparceiro  FROM tblcaptador t WHERE t.idparceiro = ${idParceiro}`;
+    const sql = `SELECT t.apelido FROM tblcaptador t WHERE t.idparceiro = ${idParceiro}`;
 
     const [rows] = await connection2.query<RowDataPacket[]>(sql);
 
     if (rows.length > 0) {
-      const result: string = rows[0].descparceiro;
+      const result: string = rows[0].apelido;
       return result;
     } else {
       return null;
@@ -596,6 +596,28 @@ export async function GetLeadIdByTimeStampAndParceiro(
 
     if (rows.length > 0) {
       const result: string = rows[0].idlead;
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function CanUploadBill(
+  idParceiro: string
+): Promise<boolean | null> {
+  try {
+    const sql = ` SELECT t.flagAnexoSimulador
+                  FROM tblcaptador t
+                  WHERE t.IdParceiro = ${idParceiro}`;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql);
+
+    if (rows.length > 0) {
+      const result: boolean = rows[0].flagAnexoSimulador === "S";
       return result;
     } else {
       return null;

@@ -17,8 +17,11 @@ import Notiflix from "notiflix";
 import { ConfigResponse } from "../lib/dbQueries";
 import SkeletonLoad from "@/components/Skeleton";
 import { useRouter } from "next/navigation";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 export default function Page({ params }: { params: { id: string } }) {
+  const [anexoSimulador, setAnexoSimulador] = useState(false);
+  const [conta, setConta] = useState<File | null>(null);
   const [leadCriado, setLeadCriado] = useState(false);
   const [insideLoading, setInsideLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -61,7 +64,6 @@ export default function Page({ params }: { params: { id: string } }) {
       },
     })
   );
-
   const [config, setConfig] = useState<ConfigResponse>({
     Id: "1",
     IdParceiro: "12",
@@ -105,6 +107,8 @@ export default function Page({ params }: { params: { id: string } }) {
       var data = await response.json();
 
       setConfig(data);
+
+      setAnexoSimulador(data.anexoSimulador);
 
       setLoading(false);
     } catch (error) {
@@ -218,6 +222,10 @@ export default function Page({ params }: { params: { id: string } }) {
 
     await formData.append("body", jsonBody!);
 
+    if (conta) {
+      await formData.append("file", conta);
+    }
+
     const response = await fetch("/api/create-lead", {
       method: "POST",
       body: formData,
@@ -269,6 +277,14 @@ export default function Page({ params }: { params: { id: string } }) {
     setValorConta(formattedValue);
   };
 
+  const handleContaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      let reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      setConta(event.target.files[0]);
+    }
+  };
+
   return loading ? (
     <SkeletonLoad />
   ) : (
@@ -299,6 +315,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <C.ContentRight>
           <C.FormContato
             primaryColor={config.CorPrimaria}
+            secondaryColor={config.CorSecundaria}
             onSubmit={handleSubmit}
           >
             {leadCriado ? (
@@ -406,7 +423,33 @@ export default function Page({ params }: { params: { id: string } }) {
                         }}
                       />
                     </C.InputArea>
-
+                    {anexoSimulador && (
+                      <>
+                        <C.InputArea>
+                          <label>Anexar conta (opcional)</label>
+                        </C.InputArea>
+                        <C.BillsArea direction="column" spacing={2}>
+                          <Button
+                            color="secondary"
+                            component="label"
+                            sx={{ padding: "10px" }}
+                            role={undefined}
+                            variant="contained"
+                            fullWidth
+                            startIcon={<FileUploadIcon />}
+                          >
+                            Anexar conta
+                            <C.VisuallyHiddenInput
+                              type="file"
+                              onChange={handleContaChange}
+                            />
+                          </Button>
+                          <h4>
+                            {conta ? conta.name : "Nenhum arquivo anexado."}
+                          </h4>
+                        </C.BillsArea>
+                      </>
+                    )}
                     <Button
                       variant="contained"
                       fullWidth

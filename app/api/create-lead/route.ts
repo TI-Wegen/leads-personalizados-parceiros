@@ -112,6 +112,10 @@ export async function POST(req: Request) {
 
     if (config == null) {
       config = await GetConfigResponse("12");
+
+      if (config == null) {
+        throw "Config não encontrada.";
+      }
     }
 
     var createLeadResult = await CreateNewLead(createNewLeadRequest);

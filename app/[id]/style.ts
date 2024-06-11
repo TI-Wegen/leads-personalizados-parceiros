@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Stack } from "@mui/material";
 import Image from "next/image";
 
 export const Container = styled.div<{ secondaryColor: string; bgUrl?: string }>`
@@ -116,11 +117,16 @@ export const ContentRight = styled.div`
   }
 `;
 
-export const FormContato = styled.form<{ primaryColor: string }>`
+export const FormContato = styled.form<{
+  primaryColor: string;
+  secondaryColor: string;
+}>`
   display: flex;
   flex-direction: column;
   padding: 40px 30px;
   width: 80%;
+  max-height: 99%;
+  overflow: auto;
   background: ${(props) => props.primaryColor};
   border-radius: 30px 0 0 30px;
   box-shadow: -11px 12px 110px 2px rgba(0, 0, 0, 0.59);
@@ -129,6 +135,20 @@ export const FormContato = styled.form<{ primaryColor: string }>`
     width: 100%;
     border-radius: 0;
     box-shadow: none;
+    max-height: none;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${(props) => props.secondaryColor};
+    border-radius: 20px;
   }
 `;
 
@@ -140,7 +160,7 @@ export const TitleArea = styled.div`
 
 export const Title = styled.h4`
   font-weight: 700;
-  font-size: 24px;
+  font-size: 20px;
   margin: 0;
 
   @media (max-width: 1024px) {
@@ -153,6 +173,8 @@ export const MarkedText = styled.span<{ secondaryColor: string }>`
 `;
 
 export const Subtitle = styled.p`
+  font-size: 16px;
+
   @media (max-width: 1024px) {
     font-size: 10px;
   }
@@ -166,5 +188,39 @@ export const InputArea = styled.div`
 
   label {
     color: white;
+  }
+`;
+
+export const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
+
+export const BillsArea = styled(Stack)`
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h4 {
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0;
+    color: #1c1c1c;
+    word-break: break-all;
+
+    @media (max-width: 1024px) {
+      font-size: 12px;
+    }
   }
 `;
