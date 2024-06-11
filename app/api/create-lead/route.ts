@@ -129,7 +129,7 @@ export async function POST(req: Request) {
       var leadEmail: LeadEmail = {
         nomeCliente: jsonBody.nome,
         emailCliente: jsonBody.email,
-        nomeParceiro: jsonBody.Nome,
+        nomeParceiro: parceiroResponse.descParceiro,
         corPrimaria: config!.CorPrimaria,
         nomePlataforma: "WeGen",
         urlLogo: `${process.env.SITE_URL}/parceiros/${
