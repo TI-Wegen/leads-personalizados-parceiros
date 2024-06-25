@@ -11,6 +11,8 @@ export interface ConfigResponse {
   Texto: string;
   TemPixelFacebook: boolean;
   PixelFacebook: string | null;
+  TextoAgradecimento: string;
+  PorcentagemDesconto: string;
 }
 
 export async function GetConfigResponse(
@@ -36,6 +38,8 @@ export async function GetConfigResponse(
         Telefone: rows[0].Telefone,
         TemPixelFacebook: rows[0].TemPixelFacebook === 1,
         Texto: rows[0].Texto,
+        TextoAgradecimento: rows[0].TextoAgradecimento,
+        PorcentagemDesconto: rows[0].PorcentagemDesconto,
       };
       return result;
     } else {
@@ -70,6 +74,8 @@ export async function GetConfigResponseById(
         Telefone: rows[0].Telefone,
         TemPixelFacebook: rows[0].TemPixelFacebook === 1,
         Texto: rows[0].Texto,
+        TextoAgradecimento: rows[0].TextoAgradecimento,
+        PorcentagemDesconto: rows[0].PorcentagemDesconto,
       };
       return result;
     } else {
@@ -103,6 +109,8 @@ export async function GetAllConfigsResponse(): Promise<
         Telefone: row.Telefone,
         TemPixelFacebook: row.TemPixelFacebook === 1,
         Texto: row.Texto,
+        TextoAgradecimento: row.TextoAgradecimento,
+        PorcentagemDesconto: rows[0].PorcentagemDesconto,
       }));
       return result;
     } else {
@@ -423,6 +431,8 @@ export interface ConfigRequest {
   Texto: string;
   TemPixelFacebook: boolean;
   PixelFacebook: string | null;
+  TextoAgradecimento: string;
+  PorcentagemDesconto: string;
 }
 
 export async function CreateConfig(
@@ -439,7 +449,9 @@ export async function CreateConfig(
           CorSecundaria,
           Texto,
           TemPixelFacebook,
-          PixelFacebook
+          PixelFacebook,
+          TextoAgradecimento,
+          PorcentagemDesconto
         )
         VALUES ( 
           null,
@@ -450,7 +462,9 @@ export async function CreateConfig(
           '${request.CorSecundaria}',
           '${request.Texto}',
           '${request.TemPixelFacebook}',
-          '${request.PixelFacebook}'
+          '${request.PixelFacebook}',
+          '${request.TextoAgradecimento}',
+          ${request.PorcentagemDesconto}
         );
 
         `;
@@ -498,7 +512,9 @@ export async function UpdateConfig(
           CorSecundaria='${request.CorSecundaria}', 
           Texto='${request.Texto}', 
           TemPixelFacebook='${request.TemPixelFacebook}', 
-          PixelFacebook='${request.PixelFacebook}'
+          PixelFacebook='${request.PixelFacebook}',
+          TextoAgradecimento='${request.TextoAgradecimento}',
+          PorcentagemDesconto='${request.PorcentagemDesconto}'
         WHERE IdParceiro='${request.IdParceiro}';
         `;
 

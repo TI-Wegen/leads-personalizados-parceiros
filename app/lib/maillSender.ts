@@ -18,6 +18,7 @@ export interface LeadEmail {
   nomeCliente: string;
   nomeParceiro: string;
   corPrimaria: string;
+  porcentagem: string;
   urlLogo: string;
   urlAnexarConta: string;
 }
@@ -28,6 +29,7 @@ export async function sendLeadEmail(leadEmail: LeadEmail) {
     nomeCliente: leadEmail.nomeCliente,
     nomeParceiro: leadEmail.nomeParceiro,
     corPrimaria: leadEmail.corPrimaria,
+    porcentagem: leadEmail.porcentagem,
     urlLogo: leadEmail.urlLogo,
     urlAnexarConta: leadEmail.urlAnexarConta,
   });

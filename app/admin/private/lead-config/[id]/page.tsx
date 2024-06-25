@@ -6,6 +6,7 @@ import {
   Checkbox,
   CircularProgress,
   IconButton,
+  InputAdornment,
   TextField,
 } from "@mui/material";
 import * as C from "./style";
@@ -31,6 +32,8 @@ export default function Page({ params }: { params: { id: string } }) {
   const [corPrimaria, setCorPrimaria] = useState("#ffffff");
   const [corSecundaria, setCorSecundaria] = useState("#ffffff");
   const [texto, setTexto] = useState("");
+  const [textoAgradecimento, setTextoAgradecimento] = useState("");
+  const [porcentagemDesconto, setPorcentagemDesconto] = useState("");
   const [temPixelFacebook, setTemPixelFacebook] = useState(false);
   const [pixelFacebook, setPixelFacebook] = useState<string | null>(null);
 
@@ -95,6 +98,8 @@ export default function Page({ params }: { params: { id: string } }) {
       setTexto(data.Texto);
       setTemPixelFacebook(data.TemPixelFacebook);
       setPixelFacebook(data.PixelFacebook);
+      setTextoAgradecimento(data.TextoAgradecimento);
+      setPorcentagemDesconto(data.PorcentagemDesconto);
 
       setLoading(false);
     }
@@ -161,6 +166,8 @@ export default function Page({ params }: { params: { id: string } }) {
       Telefone: telefoneSemMascara,
       TemPixelFacebook: temPixelFacebook,
       PixelFacebook: pixelFacebook,
+      TextoAgradecimento: textoAgradecimento,
+      PorcentagemDesconto: porcentagemDesconto,
     };
 
     const response = await fetch("/api/config", {
@@ -296,6 +303,22 @@ export default function Page({ params }: { params: { id: string } }) {
                       <TextField {...params} label="Parceiro" />
                     )}
                   />
+                  <TextField
+                    label="Porcentagem desconto"
+                    required
+                    type="number"
+                    value={porcentagemDesconto}
+                    inputProps={{
+                      maxLength: 2,
+                      minLength: 2,
+                    }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="start">%</InputAdornment>
+                      ),
+                    }}
+                    onChange={(e) => setPorcentagemDesconto(e.target.value)}
+                  />
                 </C.FullWidthStack>
                 <C.FullWidthStack direction={"row"} spacing={2}>
                   <TextField
@@ -324,6 +347,17 @@ export default function Page({ params }: { params: { id: string } }) {
                     value={texto}
                     onChange={(e) => setTexto(e.target.value)}
                   />
+                  <TextField
+                    multiline
+                    required
+                    rows={4}
+                    label="Texto de Agradecimento"
+                    fullWidth
+                    value={textoAgradecimento}
+                    onChange={(e) => setTextoAgradecimento(e.target.value)}
+                  />
+                </C.FullWidthStack>
+                <C.FullWidthStack>
                   <C.TextWarning>
                     Ao colocar textos entre <span>* *</span> eles ficarão
                     destacados. <br />

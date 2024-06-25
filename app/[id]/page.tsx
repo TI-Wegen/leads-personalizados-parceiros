@@ -74,6 +74,9 @@ export default function Page({ params }: { params: { id: string } }) {
     Texto: "texto",
     TemPixelFacebook: false,
     PixelFacebook: null,
+    TextoAgradecimento:
+      "VOCÊ ESTÁ A UM PASSO DE RECEBER ATÉ 25% DE DESCONTO NA SUA CONTA DE LUZ, EM BREVE TE RETORNAREMOS.",
+    PorcentagemDesconto: "25",
   });
 
   const router = useRouter();
@@ -196,6 +199,20 @@ export default function Page({ params }: { params: { id: string } }) {
       );
     }
   });
+
+  const markedThanksTexts = config.TextoAgradecimento.split("*").map(
+    (part, index) => {
+      if (index % 2 === 0) {
+        return part;
+      } else {
+        return (
+          <C.MarkedText key={index} secondaryColor={config.CorSecundaria}>
+            {part}
+          </C.MarkedText>
+        );
+      }
+    }
+  );
 
   async function clearFields() {
     setNome("");
@@ -326,13 +343,7 @@ export default function Page({ params }: { params: { id: string } }) {
                       OBRIGADO POR SE CADASTRAR!
                     </C.MarkedText>
                   </C.Title>
-                  <C.Subtitle>
-                    VOCÊ ESTÁ A UM PASSO DE RECEBER ATÉ 25% DE DESCONTO NA SUA
-                    CONTA DE LUZ, EM BREVE TE RETORNAREMOS,{" "}
-                    <C.MarkedText secondaryColor={config.CorSecundaria}>
-                      FAVOR VERIFICAR SEU EMAIL.
-                    </C.MarkedText>
-                  </C.Subtitle>
+                  <C.Subtitle>{markedThanksTexts}</C.Subtitle>
                 </C.TitleArea>
               </>
             ) : (

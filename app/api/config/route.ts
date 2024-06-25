@@ -49,6 +49,8 @@ export async function POST(req: Request) {
       Telefone: data.Telefone,
       TemPixelFacebook: data.TemPixelFacebook,
       PixelFacebook: data.PixelFacebook,
+      TextoAgradecimento: data.TextoAgradecimento,
+      PorcentagemDesconto: data.PorcentagemDesconto,
     };
 
     await CreateConfig(configReq);
@@ -74,6 +76,8 @@ export async function PUT(req: Request) {
       Telefone: data.Telefone,
       TemPixelFacebook: data.TemPixelFacebook,
       PixelFacebook: data.PixelFacebook,
+      TextoAgradecimento: data.TextoAgradecimento,
+      PorcentagemDesconto: data.PorcentagemDesconto,
     };
 
     await UpdateConfig(configReq);

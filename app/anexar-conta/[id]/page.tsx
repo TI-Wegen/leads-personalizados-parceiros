@@ -66,6 +66,8 @@ export default function Page({ params }: { params: { id: string } }) {
     Texto: "texto",
     TemPixelFacebook: false,
     PixelFacebook: null,
+    TextoAgradecimento: "",
+    PorcentagemDesconto: "25",
   });
 
   const [conta, setConta] = useState<File | null>(null);
@@ -238,7 +240,7 @@ export default function Page({ params }: { params: { id: string } }) {
             <br />
             VOCÊ ESTÁ A UM PASSO DE ECONOMIZAR EM{" "}
             <C.MarkedText secondaryColor={config.CorSecundaria}>
-              ATÉ 25% NA SUA CONTA DE ENERGIA.{" "}
+              ATÉ {config.PorcentagemDesconto}% NA SUA CONTA DE ENERGIA.{" "}
             </C.MarkedText>
           </C.TextDescription>
         </C.ContentLeft>
