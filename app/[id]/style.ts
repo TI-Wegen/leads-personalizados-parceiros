@@ -1,8 +1,11 @@
 import styled from "@emotion/styled";
 import { Stack, TextField } from "@mui/material";
-import Image from "next/image";
 
-export const Container = styled.div<{ secondaryColor: string; bgUrl?: string }>`
+export const Container = styled.div<{
+  primaryColor: string;
+  secondaryColor: string;
+  bgUrl?: string;
+}>`
   width: 100%;
   height: 100%;
   background: ${({ bgUrl, secondaryColor }) =>
@@ -11,7 +14,7 @@ export const Container = styled.div<{ secondaryColor: string; bgUrl?: string }>`
   background-position: center;
 
   @media (max-width: 1024px) {
-    background: ${(props) => props.secondaryColor};
+    background: ${(props) => props.primaryColor};
   }
 `;
 
@@ -27,6 +30,10 @@ export const NavbarContainer = styled.div<{ primaryColor: string }>`
   img {
     width: 120px;
     height: auto;
+  }
+
+  @media (max-width: 1024px) {
+    padding: 20px 20px;
   }
 `;
 
@@ -48,15 +55,15 @@ export const Wpp = styled.a`
     height: 28px;
     margin-right: 10px;
   }
-
-  @media (max-width: 1024px) {
-    display: none;
-  }
 `;
 
 export const WppNumber = styled.h4`
   color: white;
   margin: 0 !important;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
 `;
 
 export const DDD = styled.span`

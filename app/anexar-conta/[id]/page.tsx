@@ -211,6 +211,7 @@ export default function Page({ params }: { params: { id: string } }) {
     <SkeletonLoad />
   ) : (
     <C.Container
+      primaryColor={config.CorPrimaria}
       secondaryColor={config.CorSecundaria}
       bgUrl={`/parceiros/${config.IdParceiro}/Bg.png`}
     >
