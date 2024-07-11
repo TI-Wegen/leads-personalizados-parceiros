@@ -129,8 +129,6 @@ export async function POST(req: Request) {
       throw "Id não encontrado.";
     }
 
-    console.log(config);
-
     if (!file) {
       var leadEmail: LeadEmail = {
         nomeCliente: jsonBody.nome,
