@@ -28,8 +28,8 @@ export const NavbarContainer = styled.div<{ primaryColor: string }>`
   background: ${(props) => props.primaryColor};
 
   img {
-    width: 120px;
-    height: auto;
+    width: auto;
+    height: calc(100% + 20px);
   }
 
   @media (max-width: 1024px) {

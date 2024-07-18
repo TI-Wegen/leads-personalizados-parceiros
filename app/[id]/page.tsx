@@ -317,7 +317,7 @@ export default function Page({ params }: { params: { id: string } }) {
           href={`https://wa.me/55${config.Telefone}?text=Ol%C3%A1,%20vim%20do%20site%20do(a)%20${config.Nome}%20e%20quero%20economizar%20na%20minha%20conta%20de%20energia.`}
           target="_blank"
         >
-          <Image src={wppImage} alt="wppImage" />
+          <img src={wppImage.src} alt="wppImage" />
           <C.WppNumber>
             <C.DDD>{cellPhone.ddd}</C.DDD> {cellPhone.telefone}
           </C.WppNumber>
