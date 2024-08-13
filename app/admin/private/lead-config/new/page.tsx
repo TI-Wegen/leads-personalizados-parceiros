@@ -274,7 +274,7 @@ export default function Page() {
                     onChange={handlePhoneChange}
                     inputProps={{
                       maxLength: 15,
-                      minLength: 15,
+                      minLength: 14,
                     }}
                   />
                 </C.FullWidthStack>

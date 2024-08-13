@@ -161,7 +161,9 @@ export default function Page({ params }: { params: { id: string } }) {
     const restOfNumber = config.Telefone.slice(2);
 
     const formattedRest =
-      restOfNumber.slice(0, 5) + "-" + restOfNumber.slice(5);
+      restOfNumber.length > 8
+        ? restOfNumber.slice(0, 5) + "-" + restOfNumber.slice(5)
+        : restOfNumber.slice(0, 4) + "-" + restOfNumber.slice(4);
 
     setCellphone({
       ddd: dddPart,

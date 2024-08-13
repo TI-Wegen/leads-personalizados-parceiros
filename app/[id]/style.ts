@@ -37,8 +37,6 @@ export const NavbarContainer = styled.div<{ primaryColor: string }>`
   }
 `;
 
-export const LogoImg = styled.img``;
-
 export const Wpp = styled.a`
   display: flex;
   align-items: center;
