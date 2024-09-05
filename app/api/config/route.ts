@@ -4,6 +4,7 @@ import {
   CreateConfig,
   GetAllConfigsResponse,
   UpdateConfig,
+  VerifyConfigAlreadyExists,
 } from "@/app/lib/dbQueries";
 import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
@@ -52,6 +53,14 @@ export async function POST(req: Request) {
       TextoAgradecimento: data.TextoAgradecimento,
       PorcentagemDesconto: data.PorcentagemDesconto,
     };
+
+    var response = await VerifyConfigAlreadyExists(data.IdParceiro);
+
+    if (response?.existe) {
+      return new NextResponse("Já existe config criada para esse parceiro.", {
+        status: 400,
+      });
+    }
 
     await CreateConfig(configReq);
 

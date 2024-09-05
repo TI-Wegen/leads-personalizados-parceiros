@@ -435,6 +435,34 @@ export interface ConfigRequest {
   PorcentagemDesconto: string;
 }
 
+interface VerifyConfigAlreadyExistsResponse {
+  existe: boolean;
+}
+
+export async function VerifyConfigAlreadyExists(
+  idParceiro: string
+): Promise<ParceiroExistsResponse | null> {
+  try {
+    const sql = `
+      SELECT EXISTS(SELECT * FROM tblleadConfig t WHERE idParceiro = ? AND ativo = 'S') AS existe
+    `;
+
+    const [rows] = await connection2.query<RowDataPacket[]>(sql, [idParceiro]);
+
+    if (rows.length > 0) {
+      const result: VerifyConfigAlreadyExistsResponse = {
+        existe: rows[0].existe === 1,
+      };
+      return result;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export async function CreateConfig(
   request: ConfigRequest
 ): Promise<string | null> {
