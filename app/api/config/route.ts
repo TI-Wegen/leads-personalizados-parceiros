@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json("Criado com sucesso.");
   } catch (error) {
-    return new NextResponse("Houve um erro durante sua requisição.", {
+    return new NextResponse("Houve um erro ao criar a config do parceiro.", {
       status: 500,
     });
   }

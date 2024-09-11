@@ -444,7 +444,7 @@ export async function VerifyConfigAlreadyExists(
 ): Promise<ParceiroExistsResponse | null> {
   try {
     const sql = `
-      SELECT EXISTS(SELECT * FROM tblleadConfig t WHERE idParceiro = ? AND ativo = 'S') AS existe
+      SELECT EXISTS(SELECT * FROM tblleadConfig t WHERE idParceiro = ?) AS existe
     `;
 
     const [rows] = await connection2.query<RowDataPacket[]>(sql, [idParceiro]);

@@ -1,5 +1,10 @@
 "use client";
 
+import { ParceiroSelectResponse } from "@/app/lib/dbQueries";
+import useAuth from "@/hooks/useAuth";
+import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import {
   Autocomplete,
   Button,
@@ -9,16 +14,11 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import * as C from "./style";
-import { useEffect, useState } from "react";
-import { ParceiroSelectResponse } from "@/app/lib/dbQueries";
-import useAuth from "@/hooks/useAuth";
 import { MuiColorInput } from "mui-color-input";
-import AddIcon from "@mui/icons-material/Add";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { useRouter } from "next/navigation";
 import Notiflix from "notiflix";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useEffect, useState } from "react";
+import * as C from "./style";
 
 export default function Page() {
   useAuth();
@@ -176,7 +176,9 @@ export default function Page() {
       }
     } else {
       setLoading(false);
-      Notiflix.Notify.failure("Houve um erro ao criar a config do parceiro.");
+      const error = await response.text();
+
+      Notiflix.Notify.failure(error);
     }
   };
 
