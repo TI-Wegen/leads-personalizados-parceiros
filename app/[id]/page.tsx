@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import wppImage from "../../public/WhatsApp.png";
 import * as C from "./style";
 import {
@@ -8,7 +7,6 @@ import {
   CircularProgress,
   InputAdornment,
   Stack,
-  TextField,
   ThemeProvider,
   createTheme,
 } from "@mui/material";
@@ -366,7 +364,7 @@ export default function Page({ params }: { params: { id: string } }) {
                 <ThemeProvider theme={theme}>
                   <Stack direction="column" spacing={2}>
                     <C.InputArea>
-                      <label>Nome</label>
+                      <label>Nome *</label>
                       <C.StyledTextField
                         id="nome"
                         name="nome"
@@ -390,13 +388,12 @@ export default function Page({ params }: { params: { id: string } }) {
                           fullWidth
                           color="secondary"
                           type="email"
-                          required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </C.InputArea>
                       <C.InputArea>
-                        <label>Telefone</label>
+                        <label>Telefone *</label>
                         <C.StyledTextField
                           id="telefone"
                           name="telefone"
@@ -423,7 +420,6 @@ export default function Page({ params }: { params: { id: string } }) {
                         variant="outlined"
                         fullWidth
                         color="secondary"
-                        required
                         value={valorConta}
                         onChange={handleValorChange}
                         InputProps={{

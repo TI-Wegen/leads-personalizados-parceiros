@@ -129,23 +129,25 @@ export async function POST(req: Request) {
       throw "Id não encontrado.";
     }
 
-    if (!file) {
-      var leadEmail: LeadEmail = {
-        nomeCliente: jsonBody.nome,
-        emailCliente: jsonBody.email,
-        nomeParceiro: parceiroResponse.descParceiro,
-        corPrimaria: config!.CorPrimaria,
-        porcentagem: config!.PorcentagemDesconto,
-        nomePlataforma: "WeGen",
-        urlLogo: `${process.env.SITE_URL}/parceiros/${
-          config!.IdParceiro
-        }/Logo.png`,
-        urlAnexarConta: `${process.env.SITE_URL}/anexar-conta/${leadId}`,
-      };
+    if (jsonBody.email || jsonBody.email.trim() !== "") {
+      if (!file) {
+        var leadEmail: LeadEmail = {
+          nomeCliente: jsonBody.nome,
+          emailCliente: jsonBody.email,
+          nomeParceiro: parceiroResponse.descParceiro,
+          corPrimaria: config!.CorPrimaria,
+          porcentagem: config!.PorcentagemDesconto,
+          nomePlataforma: "WeGen",
+          urlLogo: `${process.env.SITE_URL}/parceiros/${
+            config!.IdParceiro
+          }/Logo.png`,
+          urlAnexarConta: `${process.env.SITE_URL}/anexar-conta/${leadId}`,
+        };
 
-      await sendLeadEmail(leadEmail);
-    } else {
-      await SendBillToServer(leadId, file);
+        await sendLeadEmail(leadEmail);
+      } else {
+        await SendBillToServer(leadId, file);
+      }
     }
 
     var leadParceiroEmail: LeadParceiroEmail = {
