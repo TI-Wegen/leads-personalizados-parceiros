@@ -406,7 +406,7 @@ export default function Page({ params }: { params: { id: string } }) {
                           onChange={handlePhoneChange}
                           inputProps={{
                             maxLength: 15,
-                            minLength: 15,
+                            minLength: 14,
                           }}
                         />
                       </C.InputArea>
