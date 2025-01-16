@@ -12,7 +12,6 @@ import {
 import * as C from "./style";
 import { useEffect, useState } from "react";
 import { ParceiroSelectResponse } from "@/app/lib/dbQueries";
-import useAuth from "@/hooks/useAuth";
 import { MuiColorInput } from "mui-color-input";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { useRouter } from "next/navigation";
@@ -20,8 +19,6 @@ import Notiflix from "notiflix";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function Page({ params }: { params: { id: string } }) {
-  useAuth();
-
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);

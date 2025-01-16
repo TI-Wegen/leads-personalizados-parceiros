@@ -1,7 +1,6 @@
 "use client";
 
 import { ParceiroSelectResponse } from "@/app/lib/dbQueries";
-import useAuth from "@/hooks/useAuth";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
@@ -21,8 +20,6 @@ import { useEffect, useState } from "react";
 import * as C from "./style";
 
 export default function Page() {
-  useAuth();
-
   const router = useRouter();
 
   const [idParceiro, setIdParceiro] = useState("");

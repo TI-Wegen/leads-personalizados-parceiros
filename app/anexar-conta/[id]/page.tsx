@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import wppImage from "../../../public/WhatsApp.png";
-import * as C from "./style";
+import SkeletonLoad from "@/components/Skeleton";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import {
   Button,
   CircularProgress,
@@ -10,12 +9,12 @@ import {
   ThemeProvider,
   createTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import Notiflix from "notiflix";
-import { ConfigResponse, LeadResponse } from "../../lib/dbQueries";
-import SkeletonLoad from "@/components/Skeleton";
 import { useRouter } from "next/navigation";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
+import Notiflix from "notiflix";
+import { useEffect, useState } from "react";
+import wppImage from "../../../public/WhatsApp.png";
+import { ConfigResponse, LeadResponse } from "../../lib/dbQueries";
+import * as C from "./style";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [insideLoading, setInsideLoading] = useState(false);

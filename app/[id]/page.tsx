@@ -80,6 +80,12 @@ export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
 
   const parceiroExists = async () => {
+    let id = params.id;
+
+    if (params.id == "404_") {
+      id = "404";
+    }
+
     try {
       const response = await fetch(`/api/parceiro/existe/${params.id}`, {
         method: "GET",
@@ -118,9 +124,9 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   useEffect(() => {
-    parceiroExists();
-
-    getConfig();
+    parceiroExists().then(() => {
+      getConfig();
+    });
   }, []);
 
   useEffect(() => {

@@ -2,7 +2,6 @@
 
 import { ConfigResponse } from "@/app/lib/dbQueries";
 import * as C from "./style";
-import useAuth from "@/hooks/useAuth";
 import { Button, CircularProgress, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
@@ -12,8 +11,6 @@ import { signOut } from "next-auth/react";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 export default function Page() {
-  useAuth();
-
   const router = useRouter();
   const [rows, setRows] = useState<ConfigResponse[]>([]);
   const [loading, setLoading] = useState(true);
