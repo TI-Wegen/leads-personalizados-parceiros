@@ -87,7 +87,7 @@ export default function Page({ params }: { params: { id: string } }) {
     }
 
     try {
-      const response = await fetch(`/api/parceiro/existe/${params.id}`, {
+      const response = await fetch(`/api/parceiro/existe/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -103,8 +103,14 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   const getConfig = async () => {
+    let id = params.id;
+
+    if (params.id == "404_") {
+      id = "404";
+    }
+
     try {
-      const response = await fetch(`/api/config/${params.id}`, {
+      const response = await fetch(`/api/config/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
