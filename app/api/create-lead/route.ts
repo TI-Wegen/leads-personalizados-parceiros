@@ -166,7 +166,7 @@ export async function POST(req: Request) {
       message: createLeadResult,
     });
   } catch (error) {
-    return new NextResponse("Não foi possível criar seu contato.", {
+    return new NextResponse(error as string, {
       status: 500,
     });
   }

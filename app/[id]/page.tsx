@@ -268,6 +268,7 @@ export default function Page({ params }: { params: { id: string } }) {
       await setInsideLoading(false);
       await setLeadCriado(true);
     } else {
+      console.log(response);
       Notiflix.Notify.failure("Houve um erro ao criar seu contato.");
       await setInsideLoading(false);
     }
